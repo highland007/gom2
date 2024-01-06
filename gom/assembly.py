@@ -1,7 +1,9 @@
 # gom/assembly.py
 # Defines the Assembly class for general optical models
 
-class Assembly:
+from gom.base import Serializable
+
+class Assembly(Serializable):
     def __init__(self, pose):
         self._elements = []  # Private list to store elements or sub-assemblies
         self._pose = pose    # Private tuple representing the position and orientation
@@ -37,6 +39,6 @@ class Assembly:
         # Create an Assembly instance from JSON data
         assembly = Assembly(data["pose"])
         for element_data in data["elements"]:
-            element = Element.from_json(element_data)
+            element = Serializable.from_json(element_data)
             assembly.add_element(element)
         return assembly
