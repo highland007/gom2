@@ -1,0 +1,19 @@
+gom2/
+|-- src/
+|   |-- main.py              # Main entry point of the game
+|   |-- assembly/
+|   |   |-- __init__.py      # Package marker
+|   |   |-- assembly.py      # Assembly class
+|   |   |-- element.py       # Element class
+|   |-- rendering/
+|   |   |-- __init__.py      # Package marker
+|   |   |-- scene_renderer.py# SceneRenderer class
+|   |-- scene/
+|   |   |-- __init__.py      # Package marker
+|   |   |-- scene.py         # Scene class
+|   |   |-- scene_manager.py  # SceneManager class
+|   |-- utils/
+|       |-- __init__.py      # Package marker
+|       |-- constants.py      # Constants or utility functions
+|-- README.md                # Project overview and instructions
+|-- requirements.txt         # Dependencies file
