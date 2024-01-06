@@ -10,7 +10,7 @@ from scene.scene_manager import SceneManager
 def main():
     # Create a simple root assembly with one element (replace with your assembly setup)
     root_assembly = Assembly(pose=(0, 0, 0))
-    root_assembly.add_element(Element(element_type="mirror", size=(50, 50), pose=(0, 100, 0)))
+    root_assembly.add_element(Element(element_type="mirror", size=(100, 25), pose=(200, 100, 0.5)))
 
     # Create the scene with the root assembly
     scene = Scene(root_assembly=root_assembly)

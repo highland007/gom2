@@ -4,7 +4,7 @@
 class Settings:
     def __init__(self):
         # Default colors
-        self.background_color = 'dark gray'
+        self.background_color = 'black'
         self.element_color = 'light gray'
         self.ray_color = 'your_ray_color'  # Replace with your desired color
         self.assembly_color = 'your_assembly_color'  # Replace with your desired color
