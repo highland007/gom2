@@ -1,0 +1,14 @@
+[tool.poetry]
+name = "gom2"
+version = "0.1.0"
+description = "Game of Mirrors 2D"
+authors = ["Martin Gorjan <martin.gorjan@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
