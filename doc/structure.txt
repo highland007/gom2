@@ -1,19 +1,17 @@
 gom2/
 |-- src/
-|   |-- main.py              # Main entry point of the game
-|   |-- assembly/
-|   |   |-- __init__.py      # Package marker
-|   |   |-- assembly.py      # Assembly class
-|   |   |-- element.py       # Element class
-|   |-- rendering/
-|   |   |-- __init__.py      # Package marker
-|   |   |-- scene_renderer.py# SceneRenderer class
-|   |-- scene/
-|   |   |-- __init__.py      # Package marker
-|   |   |-- scene.py         # Scene class
+|   |-- main.py               # Main entry point of the game
+|   |-- gom/                  # Package for general optical models
+|   |   |-- __init__.py       # Package marker
+|   |   |-- assembly.py       # Assembly class
+|   |   |-- element.py        # Element class
+|   |-- scene/                # Package for scene-related classes
+|   |   |-- __init__.py       # Package marker
+|   |   |-- scene.py          # Scene class
 |   |   |-- scene_manager.py  # SceneManager class
+|   |   |-- scene_renderer.py # SceneRenderer class
 |   |-- utils/
-|       |-- __init__.py      # Package marker
+|       |-- __init__.py       # Package marker
 |       |-- constants.py      # Constants or utility functions
-|-- README.md                # Project overview and instructions
-|-- requirements.txt         # Dependencies file
+|-- README.md                 # Project overview and instructions
+|-- requirements.txt          # Dependencies file
