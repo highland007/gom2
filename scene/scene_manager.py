@@ -16,4 +16,4 @@ class SceneManager:
     def handle_user_input(self):
         # Implement user controls and interactions logic here
         # For simplicity, this example handles only keypress event to exit
-        input("Press Enter to exit...")
+        input("Press q to exit...")

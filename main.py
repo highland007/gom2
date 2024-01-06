@@ -1,13 +1,19 @@
 # main.py
 # Entry point to run the application
 
+from gom.assembly import Assembly
+from gom.element import Element
 from gom.scene import Scene
 from scene.scene_renderer import SceneRenderer
 from scene.scene_manager import SceneManager
 
 def main():
-    # Create an example scene (replace with your actual scene setup)
-    scene = Scene(root_assembly=None)  # Replace 'None' with your root assembly instance
+    # Create a simple root assembly with one element (replace with your assembly setup)
+    root_assembly = Assembly(pose=(0, 0, 0))
+    root_assembly.add_element(Element(element_type="mirror", size=(50, 50), pose=(0, 100, 0)))
+
+    # Create the scene with the root assembly
+    scene = Scene(root_assembly=root_assembly)
 
     # Create a scene renderer and manager
     renderer = SceneRenderer(scene)

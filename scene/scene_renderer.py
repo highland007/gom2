@@ -2,6 +2,7 @@
 # Handles the graphical rendering of the scene using TkInter canvas
 
 import tkinter as tk
+import math  # Import the math module for trigonometric functions
 from gom.scene import Scene  # Import the Scene class from gom module
 
 class SceneRenderer:
@@ -23,15 +24,20 @@ class SceneRenderer:
             # Assume the pose is (x, y, orientation)
             x, y, orientation = element.pose
             width, height = element.size
-            # Calculate coordinates and angles for rendering
+            # Calculate coordinates for rendering a rotated rectangle
             x1 = x - width / 2
             y1 = y - height / 2
             x2 = x + width / 2
             y2 = y + height / 2
-            # Convert orientation to degrees for rendering
-            angle = orientation * 180 / 3.14
-            # Draw a rectangle representing the element
-            self.canvas.create_rectangle(x1, y1, x2, y2, fill='blue', outline='black', angle=angle)
+            # Convert orientation to radians for rendering
+            angle = -orientation  # Negative sign for counterclockwise rotation
+            # Calculate rotated coordinates using math functions
+            x1r = x + (x1 - x) * math.cos(angle) - (y1 - y) * math.sin(angle)
+            y1r = y + (x1 - x) * math.sin(angle) + (y1 - y) * math.cos(angle)
+            x2r = x + (x2 - x) * math.cos(angle) - (y2 - y) * math.sin(angle)
+            y2r = y + (x2 - x) * math.sin(angle) + (y2 - y) * math.cos(angle)
+            # Draw a polygon representing the rotated rectangle
+            self.canvas.create_polygon(x1r, y1r, x2r, y1r, x2r, y2r, x1r, y2r, fill='blue', outline='black')
 
 # Example usage:
 # scene = Scene(root_assembly=some_assembly_instance)
