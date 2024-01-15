@@ -30,7 +30,7 @@ class SceneRenderer:
         surface.fill(self.settings.background_color)
 
         # Render elements
-        for element in self.scene.root_assembly:
+        for element in self.scene.root_assembly.elements:
             x, y, angle = element.pose  # Get x coordinate, y coordinate, and angle
             width, height = element.size  # Get width and height
 
