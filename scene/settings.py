@@ -3,13 +3,16 @@
 
 class Settings:
     def __init__(self):
-        # Default colors
+        # Default settings
         self.background_color = 'black'
         self.element_color = 'light gray'
         self.ray_color = 'your_ray_color'  # Replace with your desired color
         self.assembly_color = 'your_assembly_color'  # Replace with your desired color
         self.label_color = 'your_label_color'  # Replace with your desired color
+        self.window_width = 1200
+        self.window_height = 800
 
+    # TODO User set settings (colors, etc.)
     def set_colors(self, background, element, ray, assembly, label):
         # Set colors based on user preferences
         self.background_color = background

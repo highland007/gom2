@@ -1,23 +1,29 @@
 # gom/scene/scene_renderer.py
 # Handles the graphical rendering of the scene using TkInter canvas
 
-import tkinter as tk
+from tkinter import *
 import math
 from gom.scene import Scene
 from scene.settings import Settings  # Import the Settings class from the scene module
 
 class SceneRenderer:
     def __init__(self, scene, settings=None):
-        # Initialize the renderer with the given scene and settings
+        # Set the scene and display settings
         self.scene = scene
         self.settings = settings or Settings()
-        self.root = tk.Tk()
-        self.canvas = tk.Canvas(self.root, width=800, height=600, bg=self.settings.background_color)
-        self.canvas.pack()
+        # Initialize the renderer with a TkInter canvas and reconfigure for single infinite grid
+        self.root = Tk()
+        self.root.columnconfigure(0, weight=1)
+        self.root.rowconfigure(0, weight=1)
+        self.canvas = Canvas(self.root, width=self.settings.window_width, height=self.settings.window_height, bg=self.settings.background_color, highlightthickness=0)
+        self.canvas.grid(column=0, row=0, sticky=(N, W, E, S))
 
     def render(self):
         # Render the scene using the TkInter canvas
         self.render_elements(self.scene.root_assembly.elements)
+        # Set the focus to the canvas widget
+        self.canvas.focus_set()
+        # Run the TkInter main loop
         self.root.mainloop()
 
     def render_elements(self, elements):
@@ -40,9 +46,4 @@ class SceneRenderer:
             y2r = y + (x2 - x) * math.sin(angle) + (y2 - y) * math.cos(angle)
             # Draw a polygon representing the rotated rectangle with element color
             self.canvas.create_polygon(x1r, y1r, x2r, y1r, x2r, y2r, x1r, y2r, fill=self.settings.element_color, outline='black')
-
-# Example usage:
-# settings = Settings()
-# scene = Scene(root_assembly=some_assembly_instance)
-# renderer = SceneRenderer(scene, settings)
-# renderer.render()
+            
