@@ -11,6 +11,7 @@ def main():
     # Create a simple root assembly with one element (replace with your assembly setup)
     root_assembly = Assembly(pose=(0, 0, 0))
     root_assembly.add_element(Element(element_type="mirror", size=(100, 25), pose=(200, 100, 0.5)))
+    root_assembly.add_element(Element(element_type="mirror", size=(125, 35), pose=(400, 400, 1)))
 
     # Create the scene with the root assembly
     scene = Scene(root_assembly=root_assembly)
