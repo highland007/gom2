@@ -29,21 +29,25 @@ class SceneRenderer:
     def render_elements(self, elements):
         # Render all elements on the canvas
         for element in elements:
-            # Assume the pose is (x, y, orientation)
+            # Get coordinates and angle from the pose, assume t(x, y, orientation)
             x, y, orientation = element.pose
             width, height = element.size
-            # Calculate coordinates for rendering a rotated rectangle
+
+            # Calculate coordinates for the rectangle's corners without rotation
+            # Use "bellybutton" coordinates (center of the front face) as the origin
             x1 = x - width / 2
-            y1 = y - height / 2
             x2 = x + width / 2
-            y2 = y + height / 2
-            # Convert orientation to radians for rendering
-            angle = -orientation  # Negative sign for counterclockwise rotation
-            # Calculate rotated coordinates using math functions
-            x1r = x + (x1 - x) * math.cos(angle) - (y1 - y) * math.sin(angle)
-            y1r = y + (x1 - x) * math.sin(angle) + (y1 - y) * math.cos(angle)
-            x2r = x + (x2 - x) * math.cos(angle) - (y2 - y) * math.sin(angle)
-            y2r = y + (x2 - x) * math.sin(angle) + (y2 - y) * math.cos(angle)
-            # Draw a polygon representing the rotated rectangle with element color
-            self.canvas.create_polygon(x1r, y1r, x2r, y1r, x2r, y2r, x1r, y2r, fill=self.settings.element_color, outline='black')
-            
+            y1 = y
+            y2 = y + height
+            # Create polygon representing the rectangle without rotation
+            poly = self.canvas.create_polygon((x1, y1, x2, y1, x2, y2, x1, y2), outline=self.settings.element_outline, fill=self.settings.element_fill)  # Assign the polygon's ID to poly
+
+            # Rotate the polygon points and update the polygon coordinates
+            points = self.rotate_points(self.canvas.coords(poly), math.radians(orientation), (x, y))  # Rotate the polygon around the origin
+            self.canvas.coords(poly, *points)  # Update the polygon coordinates using canvas.coords method
+
+    def rotate_points(self, points, angle, center):
+        """Rotate a point clockwise by a given angle around a given origin."""
+        return [(math.cos(angle) * (px-center[0]) + math.sin(angle) * (py-center[1]) + center[0],
+                -math.sin(angle) * (px-center[0]) + math.cos(angle) * (py-center[1]) + center[1]) for px, py in zip(points[::2], points[1::2])]
+

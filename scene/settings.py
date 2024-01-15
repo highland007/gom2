@@ -5,9 +5,10 @@ class Settings:
     def __init__(self):
         # Default settings
         self.background_color = 'black'
-        self.element_color = 'light gray'
-        self.ray_color = 'your_ray_color'  # Replace with your desired color
-        self.assembly_color = 'your_assembly_color'  # Replace with your desired color
+        self.element_fill = 'blue'
+        self.element_outline = 'white'
+        self.ray_color = 'red'  # Replace with your desired color
+        self.assembly_color = 'magenta'  # Replace with your desired color
         self.label_color = 'your_label_color'  # Replace with your desired color
         self.window_width = 1200
         self.window_height = 800
