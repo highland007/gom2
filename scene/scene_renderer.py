@@ -23,13 +23,24 @@ class SceneRenderer:
         pygame.display.update()
 
     def draw_elements(self):
-        # Clear the screen
-        self.screen.fill(self.settings.background_color)
+        # Create a surface to draw on
+        surface = pygame.Surface((800, 600))
+
+        # Clear the surface
+        surface.fill(self.settings.background_color)
 
         # Render elements
-        for element in self.scene.root_assembly.elements:
-            # Render elements here
-            pass
+        for element in self.scene.root_assembly:
+            x, y, angle = element.pose  # Get x coordinate, y coordinate, and angle
+            width, height = element.size  # Get width and height
+
+            # Draw rectangle on the surface
+            pygame.draw.rect(surface, (255, 0, 0), (x, y, width, height))
+
+        # Blit the surface onto the screen
+        self.screen.blit(surface, (0, 0))
+
+        pygame.display.update()
 
     def quit(self):
         pygame.quit()
