@@ -2,8 +2,6 @@
 # Defines the Scene class for managing the entire scene
 # Defines the Scene class representing the top-level scene structure using Pygame
 
-import pygame
-from pygame.locals import *
 from gom.base import Serializable
 
 class Scene(Serializable):
