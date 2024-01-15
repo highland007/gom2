@@ -1,19 +1,24 @@
 # gom/scene/scene_manager.py
-# Handles user controls and interactions in the scene
+# Manages user controls and scene interactions using Pygame
+
+import pygame
+from pygame.locals import *
 
 class SceneManager:
-    def __init__(self, scene, renderer):
-        # Initialize the scene manager with the given scene and renderer
-        self.scene = scene
+    def __init__(self, renderer):
         self.renderer = renderer
-        self.renderer.root.bind("<Key>", self.handle_keypress)
+        self.quit_requested = False
 
-    def handle_keypress(self, event):
-        # Handle keypress event, exit on "Q" or "q"
-        if event.char.lower() == 'q':
-            self.renderer.root.destroy()
+    def handle_events(self):
+        for event in pygame.event.get():
+            if event.type == QUIT:
+                self.quit_requested = True
+            elif event.type == KEYDOWN:
+                if event.key == K_q:
+                    self.quit_requested = True
 
-    def handle_user_input(self):
-        # Implement user controls and interactions logic here
-        # For simplicity, this example handles only keypress event to exit
-        input("Press q to exit...")
+    def run(self):
+        while not self.quit_requested:
+            self.handle_events()
+            self.renderer.render()
+

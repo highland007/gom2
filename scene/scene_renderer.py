@@ -1,48 +1,36 @@
 # gom/scene/scene_renderer.py
-# Handles the graphical rendering of the scene using TkInter canvas
+# Handles graphical rendering of the scene using Pygame
 
-import tkinter as tk
-import math
-from gom.scene import Scene
-from scene.settings import Settings  # Import the Settings class from the scene module
+import pygame
+from pygame.locals import *
+from scene.scene_manager import SceneManager
+from scene.settings import SceneSettings
 
 class SceneRenderer:
     def __init__(self, scene, settings=None):
-        # Initialize the renderer with the given scene and settings
         self.scene = scene
-        self.settings = settings or Settings()
-        self.root = tk.Tk()
-        self.canvas = tk.Canvas(self.root, width=800, height=600, bg=self.settings.background_color)
-        self.canvas.pack()
+        self.settings = settings or SceneSettings()
+        self.quit_requested = False
+        self.scene_manager = SceneManager(self)
+
+        pygame.init()
+        self.screen = pygame.display.set_mode((800, 600))
+        pygame.display.set_caption("Game of Mirrors 2D")
 
     def render(self):
-        # Render the scene using the TkInter canvas
-        self.render_elements(self.scene.root_assembly.elements)
-        self.root.mainloop()
+        self.scene.update()
+        self.draw_elements()
+        pygame.display.update()
 
-    def render_elements(self, elements):
-        # Render all elements on the canvas
-        for element in elements:
-            # Assume the pose is (x, y, orientation)
-            x, y, orientation = element.pose
-            width, height = element.size
-            # Calculate coordinates for rendering a rotated rectangle
-            x1 = x - width / 2
-            y1 = y - height / 2
-            x2 = x + width / 2
-            y2 = y + height / 2
-            # Convert orientation to radians for rendering
-            angle = -orientation  # Negative sign for counterclockwise rotation
-            # Calculate rotated coordinates using math functions
-            x1r = x + (x1 - x) * math.cos(angle) - (y1 - y) * math.sin(angle)
-            y1r = y + (x1 - x) * math.sin(angle) + (y1 - y) * math.cos(angle)
-            x2r = x + (x2 - x) * math.cos(angle) - (y2 - y) * math.sin(angle)
-            y2r = y + (x2 - x) * math.sin(angle) + (y2 - y) * math.cos(angle)
-            # Draw a polygon representing the rotated rectangle with element color
-            self.canvas.create_polygon(x1r, y1r, x2r, y1r, x2r, y2r, x1r, y2r, fill=self.settings.element_color, outline='black')
+    def draw_elements(self):
+        # Clear the screen
+        self.screen.fill(self.settings.background_color)
 
-# Example usage:
-# settings = Settings()
-# scene = Scene(root_assembly=some_assembly_instance)
-# renderer = SceneRenderer(scene, settings)
-# renderer.render()
+        # Render elements
+        for element in self.scene.root_assembly.elements:
+            # Render elements here
+            pass
+
+    def quit(self):
+        pygame.quit()
+

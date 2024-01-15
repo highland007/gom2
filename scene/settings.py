@@ -1,7 +1,7 @@
 # scene/settings.py
 # Defines the Settings class for storing various settings, including colors
 
-class Settings:
+class SceneSettings:
     def __init__(self):
         # Default colors
         self.background_color = 'black'
