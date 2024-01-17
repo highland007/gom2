@@ -24,8 +24,25 @@ class SceneManager:
 
         # Bind mouse click event to on_mouse_click method
         self.canvas.bind("<Button-1>", self.on_mouse_click)
+        self.canvas.bind("<Double-Button-1>", self.on_mouse_double_click)
 
     def on_mouse_click(self, event):
         # Handle mouse click event here
         print(f"Mouse clicked at {event.x}, {event.y}")
 
+        # Iterate over the elements in the scene's root_assembly
+        for element in self.scene.root_assembly.elements:
+            # Get coordinates and angle from the pose, assume t(x, y, orientation)
+            x, y, orientation = element.pose
+            width, height = element.size
+
+            # Calculate the distance between the mouse click and the element
+            distance = ((x - event.x)**2 + (y - event.y)**2)**0.5
+
+            # If the distance is less than 10 pixels, the element was selected
+            if distance <= 50:
+                print(f"Element {element.type} was selected")
+
+    def on_mouse_double_click(self, event):
+        # Handle mouse double click event here
+        print(f"Mouse double clicked at {event.x}, {event.y}")

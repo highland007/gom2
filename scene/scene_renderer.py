@@ -21,10 +21,8 @@ class SceneRenderer:
     def render(self):
         # Render the scene using the TkInter canvas
         self.render_elements(self.scene.root_assembly.elements)
-        # Set the focus to the canvas widget
+        # Set the focus to the canvas widget after rendering
         self.canvas.focus_set()
-        # Run the TkInter main loop
-        # self.root.mainloop()
 
     def render_elements(self, elements):
         # Render all elements on the canvas
