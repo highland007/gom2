@@ -4,11 +4,12 @@
 from gom.base import Serializable
 
 class Element(Serializable):
-    def __init__(self, element_type, size, pose):
+    def __init__(self, pose, size, element_type):
         # Initialize an element with type, size, and pose
-        self.type = element_type  # 'mirror' or 'lens'
+        self.pose = pose          # Tuple (x, y, orientation)        
         self.size = size          # Tuple (width, height)
-        self.pose = pose          # Tuple (x, y, orientation)
+        self.type = element_type  # 'mirror' or 'lens'
+        self.tkinter_id = None    # Add this line to store the TkInter ID of the element for rendering
 
     def to_json(self):
         # Convert element to a JSON-compatible format
