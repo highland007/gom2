@@ -25,10 +25,12 @@ class SceneManager:
         self.canvas.focus_set()
 
         # Bind mouse click event to on_mouse_click method
-        self.canvas.bind("<Button-1>", self.on_mouse_click)
-        self.canvas.bind("<Double-Button-1>", self.on_mouse_double_click)
+        self.canvas.bind("<Button-1>", self.select_element) # mouse click
+        self.canvas.bind("<B1-Motion>", self.move_element) # mouse drag
+        self.canvas.bind("<Double-Button-1>", self.rotate_element) # mouse double click
 
-    def on_mouse_click(self, event):
+
+    def select_element(self, event):
         # Handle mouse click event here
         print(f"Mouse clicked at {event.x}, {event.y}")
 
@@ -44,13 +46,58 @@ class SceneManager:
             # If the distance is less than 10 pixels, the element was selected
             if distance <= 50:
                 print(f"Element {element.type} was selected")
-                # Update element orientation by 10 degrees
-                element.pose = (x, y, orientation + 10)
-                # Update the element: polygon on the canvas
-                new_points = self.renderer.rotate_points(self.renderer.canvas.coords(element.tkinter_id), math.radians(10), (x, y))
-                self.renderer.canvas.coords(element.tkinter_id, *new_points)
+
+
+    def move_element(self, event):
+        '''
+        Move Element with mouse drag
+        update element pose and polygon coordinates
+        '''
+
+        # Iterate over the elements in the scene's root_assembly
+        for element in self.scene.root_assembly.elements:
+            # Get coordinates and angle from the pose, assume t(x, y, orientation)
+            x, y, orientation = element.pose
+            width, height = element.size
+
+            # Calculate the distance between the mouse click and the element
+            distance = ((x - event.x)**2 + (y - event.y)**2)**0.5
+
+            # If the distance is less than 10 pixels, the element was selected
+            # Update element position to new mouse position
+            if distance <= 50:
+                # Update element in assembly to new mouse position
+                element.pose = (event.x, event.y, orientation)
+                # Print new element pose
+                print(f"Element {element.type} was moved to {element.pose}")
+                # Update element on the screen: polygon on the canvas
+                points = self.renderer.create_points(event.x, event.y, width, height)
+                new_points = self.renderer.rotate_points(points, math.radians(orientation), (event.x, event.y))
+                self.renderer.canvas.coords(element.tkinter_id, *new_points)               
             
 
-    def on_mouse_double_click(self, event):
+    def rotate_element(self, event):
         # Handle mouse double click event here
         print(f"Mouse double clicked at {event.x}, {event.y}")
+
+        # Iterate over the elements in the scene's root_assembly
+        for element in self.scene.root_assembly.elements:
+            # Get coordinates and angle from the pose, assume t(x, y, orientation)
+            x, y, orientation = element.pose
+            width, height = element.size
+
+            # Calculate the distance between the mouse click and the element
+            distance = ((x - event.x)**2 + (y - event.y)**2)**0.5
+
+            # If the distance is less than 10 pixels, the element was selected
+            # Update element orientation by 10 degrees
+            if distance <= 50:
+                print(f"Element {element.type} was selected")
+                # Update element in assembly
+                # TODO for testing: orientation by 10 degrees
+                # TODO add alignment/aiming to mouse cursor or ray aiming later
+                element.pose = (x, y, orientation + 10)
+                # Update element on the screen: polygon on the canvas
+                points = self.renderer.create_points(x, y, width, height)
+                new_points = self.renderer.rotate_points(points, math.radians(orientation + 10), (x, y))
+                self.renderer.canvas.coords(element.tkinter_id, *new_points)        

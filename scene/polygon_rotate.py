@@ -44,6 +44,7 @@ def rotatePoly(event):  # New function to rotate the polygon
             angle = -rot_step
         points = rotate(canvas.coords(poly), math.radians(angle), (lastx, lasty))  # Rotate the polygon
         canvas.coords(poly, *points)  # Update the polygon coordinates using canvas.coords method
+        
 def rotate(points, angle, center):
     """Rotate a point counterclockwise by a given angle around a given origin."""
     return [(math.cos(angle) * (px-center[0]) - math.sin(angle) * (py-center[1]) + center[0],
