@@ -39,6 +39,8 @@ class SceneRenderer:
             y2 = y + height
             # Create polygon representing the rectangle without rotation
             poly = self.canvas.create_polygon((x1, y1, x2, y1, x2, y2, x1, y2), outline=self.settings.element_outline, fill=self.settings.element_fill)  # Assign the polygon's ID to poly
+            # Store the ID of the polygon in the element's tkinter_id attribute
+            element.tkinter_id = poly
 
             # Rotate the polygon points and update the polygon coordinates
             points = self.rotate_points(self.canvas.coords(poly), math.radians(orientation), (x, y))  # Rotate the polygon around the origin

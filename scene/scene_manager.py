@@ -1,6 +1,8 @@
 # gom/scene/scene_manager.py
 # Handles user controls and interactions in the scene
 
+import math
+
 class SceneManager:
     def __init__(self, scene, renderer, canvas):
         # Initialize the scene manager with the given scene, renderer, and canvas
@@ -42,6 +44,12 @@ class SceneManager:
             # If the distance is less than 10 pixels, the element was selected
             if distance <= 50:
                 print(f"Element {element.type} was selected")
+                # Update element orientation by 10 degrees
+                element.pose = (x, y, orientation + 10)
+                # Update the element: polygon on the canvas
+                new_points = self.renderer.rotate_points(self.renderer.canvas.coords(element.tkinter_id), math.radians(10), (x, y))
+                self.renderer.canvas.coords(element.tkinter_id, *new_points)
+            
 
     def on_mouse_double_click(self, event):
         # Handle mouse double click event here
