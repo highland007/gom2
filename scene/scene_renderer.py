@@ -43,7 +43,9 @@ class SceneRenderer:
             self.canvas.coords(poly, *points)  # Update the polygon coordinates using canvas.coords method
 
 
-    # TODO move these methods to a separate class for polygon manipulation
+    # TODO join create points and rotate points into one method
+    # TODO store points in element object? Used for collision / selection detection, rescaling, etc.
+    # TODO move these methods to a separate class for polygon manipulation, in Element class?
 
     def create_points(self, x, y, width, height):
         # Calculate coordinates for the rectangle's corners without rotation

@@ -30,6 +30,9 @@ class SceneManager:
         self.canvas.bind("<Double-Button-1>", self.rotate_element) # mouse double click
 
 
+    # TODO update select_element using element points as bounding box
+    # TODO refactor: rename and separte the methods and their parts for code reuse & clarity
+
     def select_element(self, event):
         # Handle mouse click event here
         print(f"Mouse clicked at {event.x}, {event.y}")
