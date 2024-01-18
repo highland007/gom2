@@ -76,7 +76,11 @@ class SceneManager:
                 # Update element on the screen: polygon on the canvas
                 points = self.renderer.create_points(event.x, event.y, width, height)
                 new_points = self.renderer.rotate_points(points, math.radians(orientation), (event.x, event.y))
-                self.renderer.canvas.coords(element.tkinter_id, *new_points)               
+                # Fixed bug with points in bad format (float) after movement
+                # TODO clean the points reformat code below and in render_elements
+                unpacked_points = [point for pair in new_points for point in pair]  # Unpack the points from a list of tuples to a list of numbers
+                integer_points = [int(point) for point in unpacked_points]  # Convert the points to integers                
+                self.renderer.canvas.coords(element.tkinter_id, integer_points)               
             
 
     def rotate_element(self, event):
@@ -103,4 +107,8 @@ class SceneManager:
                 # Update element on the screen: polygon on the canvas
                 points = self.renderer.create_points(x, y, width, height)
                 new_points = self.renderer.rotate_points(points, math.radians(orientation + 10), (x, y))
-                self.renderer.canvas.coords(element.tkinter_id, *new_points)        
+                # Fixed bug with points in bad format (float) after rotation
+                # TODO clean the points reformat code below and in render_elements
+                unpacked_points = [point for pair in new_points for point in pair]  # Unpack the points from a list of tuples to a list of numbers
+                integer_points = [int(point) for point in unpacked_points]  # Convert the points to integers                
+                self.renderer.canvas.coords(element.tkinter_id, integer_points)       

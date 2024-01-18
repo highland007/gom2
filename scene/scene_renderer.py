@@ -28,19 +28,30 @@ class SceneRenderer:
 
     def render_elements(self, elements):
         # Render all elements on the canvas
+        # TODO fixing bug with points in bad format after rotation
+        # TODO additional lines for testing purposes, remove later
         for element in elements:
             # Get coordinates and angle from the pose, assume t(x, y, orientation)
             x, y, orientation = element.pose
             width, height = element.size
             # Calculate coordinates for the rectangle's corners without rotation
             points = self.create_points(x, y, width, height)
+            print(f"Points: {points}")
             # Create polygon representing the rectangle without rotation
             poly = self.canvas.create_polygon(points, outline=self.settings.element_outline, fill=self.settings.element_fill)  # Assign the polygon's ID to poly
             # Store the ID of the polygon in the element's tkinter_id attribute
             element.tkinter_id = poly
             # Rotate the polygon points and update the polygon coordinates
             points = self.rotate_points(self.canvas.coords(poly), math.radians(orientation), (x, y))  # Rotate the polygon around the origin
-            self.canvas.coords(poly, *points)  # Update the polygon coordinates using canvas.coords method
+            unpacked_points = [point for pair in points for point in pair]  # Unpack the points from a list of tuples to a list of numbers
+            integer_points = [int(point) for point in unpacked_points]  # Convert the points to integers
+            print(f"Rotated points: {unpacked_points}")
+            print(f"Integer points: {integer_points}")
+            # Ensure points are valid before updating polygon coordinates
+
+            self.canvas.coords(poly, integer_points)
+
+            # self.canvas.coords(poly, *points)  # Update the polygon coordinates using canvas.coords method
 
 
     # TODO join create points and rotate points into one method
