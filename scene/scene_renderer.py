@@ -28,10 +28,8 @@ class SceneRenderer:
 
     def render_elements(self, elements):
         # Render all elements on the canvas
-        # TODO fixing bug with points in bad format after rotation
-        # TODO additional lines for testing purposes, remove later
         for element in elements:
-            # Get coordinates and angle from the pose, assume t(x, y, orientation)
+            # Get coordinates and angle from the pose, assume (x, y, orientation)
             x, y, orientation = element.pose
             width, height = element.size
             # Calculate coordinates for the rectangle's corners with rotation
@@ -42,22 +40,16 @@ class SceneRenderer:
             element.tkinter_id = poly
 
 
-    # TODO update create_points method to create_rotated_points method
-    # TODO store points in element object? Used for collision / selection detection, rescaling, etc.
-    # TODO move these methods to a separate class for polygon manipulation, in Element class?
+    def update_element(self, element):
+        # Get coordinates and angle from the pose, assume (x, y, orientation)
+        x, y, orientation = element.pose
+        width, height = element.size
+        # Calculate coordinates for the rectangle's corners with rotation
+        points = self.create_rotated_points(x, y, orientation, width, height)
+        # Create polygon representing the rectangle with rotation
+        self.canvas.coords(element.tkinter_id, points)          
 
-    # TODO old create_points method, remove later
-    def create_points(self, x, y, width, height):
-        # Calculate coordinates for the rectangle's corners without rotation
-        # Use "bellybutton" coordinates (center of the front face) as the origin
-        x1 = x - width / 2
-        x2 = x + width / 2
-        y1 = y
-        y2 = y + height
-        # Create polygon representing the rectangle without rotation
-        return (x1, y1, x2, y1, x2, y2, x1, y2)
     
-    # TODO new create_rotated_points method, keep
     def create_rotated_points(self, x, y, angle, width, height):
         """
         Create a set of points for rotated rectangle.
@@ -71,20 +63,21 @@ class SceneRenderer:
         y1 = y
         y2 = y + height
         # Create points representing the rectangle without rotation
-        points = (x1, y1, x2, y1, x2, y2, x1, y2)
+        points = [x1, y1, x2, y1, x2, y2, x1, y2]
         # Rotate the points around the "bellybutton" and return the rotated points
         rotated_points = self.rotate_points(points, math.radians(angle), (x,y))
         # Convert the rotated points to integers to avoid TkInter bug with float coordinates
         integer_points = [int(point) for point in rotated_points]
         return integer_points
 
+
     def rotate_points(self, points, angle, center):
         """
         Rotate a point clockwise by a given angle around a given origin.
-        Input: points Tuple, angle Float, center Tuple
-        Return: rotated_points flattened list of points
+        Input: points List, angle Float, center Tuple
         """
-        rotated_points = [(math.cos(angle) * (px-center[0]) + math.sin(angle) * (py-center[1]) + center[0],
-                          -math.sin(angle) * (px-center[0]) + math.cos(angle) * (py-center[1]) + center[1]) for px, py in zip(points[::2], points[1::2])]
-        return [point for pair in rotated_points for point in pair]  # Flatten the list of tuples to a flat list of points
-
+        for i in range(0, len(points), 2):
+            px, py = points[i], points[i+1]
+            points[i] = math.cos(angle) * (px - center[0]) + math.sin(angle) * (py - center[1]) + center[0]
+            points[i+1] = -math.sin(angle) * (px - center[0]) + math.cos(angle) * (py - center[1]) + center[1]
+        return points

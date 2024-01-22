@@ -76,14 +76,8 @@ class SceneManager:
                 element.pose = (event.x, event.y, orientation)
                 # Print new element pose
                 print(f"Element {element.type} was moved to {element.pose}")
-                # Update element on the screen: polygon on the canvas
-                points = self.renderer.create_points(event.x, event.y, orientation, width, height)
-                # Fixed bug with points in bad format (float) after movement
-                # TODO clean the points reformat code below and in render_elements
-                unpacked_points = [point for pair in new_points for point in pair]  # Unpack the points from a list of tuples to a list of numbers
-                integer_points = [int(point) for point in unpacked_points]  # Convert the points to integers
-                # TODO update element in SceneRenderer -> update_element method                
-                self.renderer.canvas.coords(element.tkinter_id, integer_points)               
+                # Update element on the screen with new coordinates
+                self.renderer.update_element(element)               
             
 
     def rotate_element(self, event):
@@ -96,24 +90,17 @@ class SceneManager:
             x, y, orientation = element.pose
             width, height = element.size
 
+            # TODO update to check if within element bounding box
             # Calculate the distance between the mouse click and the element
             distance = ((x - event.x)**2 + (y - event.y)**2)**0.5
 
             # If the distance is less than 10 pixels, the element was selected
             # Update element orientation by 10 degrees
-            # TODO update to check if within element bounding box
             if distance <= 50:
                 print(f"Element {element.type} was selected")
                 # Update element in assembly
                 # TODO for testing: orientation by 10 degrees
                 # TODO add alignment/aiming to mouse cursor or ray aiming later
                 element.pose = (x, y, orientation + 10)
-                # Update element on the screen: polygon on the canvas
-                points = self.renderer.create_points(x, y, width, height)
-                new_points = self.renderer.rotate_points(points, math.radians(orientation + 10), (x, y))
-                # Fixed bug with points in bad format (float) after rotation
-                # TODO clean the points reformat code below and in render_elements
-                unpacked_points = [point for pair in new_points for point in pair]  # Unpack the points from a list of tuples to a list of numbers
-                integer_points = [int(point) for point in unpacked_points]  # Convert the points to integers
-                # TODO update element in SceneRenderer -> update_element method                 
-                self.renderer.canvas.coords(element.tkinter_id, integer_points)       
+                # Update element on the screen with new coordinates
+                self.renderer.update_element(element)       
