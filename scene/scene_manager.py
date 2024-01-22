@@ -43,6 +43,8 @@ class SceneManager:
             x, y, orientation = element.pose
             width, height = element.size
 
+            # TODO update to check if within element bounding box
+
             # Calculate the distance between the mouse click and the element
             distance = ((x - event.x)**2 + (y - event.y)**2)**0.5
 
@@ -63,20 +65,19 @@ class SceneManager:
             x, y, orientation = element.pose
             width, height = element.size
 
+            # TODO update to check if within element bounding box
             # Calculate the distance between the mouse click and the element
             distance = ((x - event.x)**2 + (y - event.y)**2)**0.5
 
             # If the distance is less than 10 pixels, the element was selected
             # Update element position to new mouse position
             if distance <= 50:
-                # Update element in assembly to new mouse position
+                # Update element pose in assembly to new mouse position
                 element.pose = (event.x, event.y, orientation)
                 # Print new element pose
                 print(f"Element {element.type} was moved to {element.pose}")
-                # Update element on the screen: polygon on the canvas
-                points = self.renderer.create_points(event.x, event.y, width, height)
-                new_points = self.renderer.rotate_points(points, math.radians(orientation), (event.x, event.y))
-                self.renderer.canvas.coords(element.tkinter_id, *new_points)               
+                # Update element on the screen with new coordinates
+                self.renderer.update_element(element)               
             
 
     def rotate_element(self, event):
@@ -89,6 +90,7 @@ class SceneManager:
             x, y, orientation = element.pose
             width, height = element.size
 
+            # TODO update to check if within element bounding box
             # Calculate the distance between the mouse click and the element
             distance = ((x - event.x)**2 + (y - event.y)**2)**0.5
 
@@ -100,7 +102,5 @@ class SceneManager:
                 # TODO for testing: orientation by 10 degrees
                 # TODO add alignment/aiming to mouse cursor or ray aiming later
                 element.pose = (x, y, orientation + 10)
-                # Update element on the screen: polygon on the canvas
-                points = self.renderer.create_points(x, y, width, height)
-                new_points = self.renderer.rotate_points(points, math.radians(orientation + 10), (x, y))
-                self.renderer.canvas.coords(element.tkinter_id, *new_points)        
+                # Update element on the screen with new coordinates
+                self.renderer.update_element(element)       

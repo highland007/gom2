@@ -29,37 +29,52 @@ class SceneRenderer:
     def render_elements(self, elements):
         # Render all elements on the canvas
         for element in elements:
-            # Get coordinates and angle from the pose, assume t(x, y, orientation)
-            x, y, orientation = element.pose
-            width, height = element.size
-            # Calculate coordinates for the rectangle's corners without rotation
-            points = self.create_points(x, y, width, height)
-            # Create polygon representing the rectangle without rotation
-            poly = self.canvas.create_polygon(points, outline=self.settings.element_outline, fill=self.settings.element_fill)  # Assign the polygon's ID to poly
+            # Calculate coordinates for the rectangle's corners with rotation
+            polygon_points = self.create_rotated_points(element)
+            # Create polygon representing the rectangle with rotation
+            poly = self.canvas.create_polygon(polygon_points, outline=self.settings.element_outline, fill=self.settings.element_fill)  # Assign the polygon's ID to poly
             # Store the ID of the polygon in the element's tkinter_id attribute
             element.tkinter_id = poly
-            # Rotate the polygon points and update the polygon coordinates
-            points = self.rotate_points(self.canvas.coords(poly), math.radians(orientation), (x, y))  # Rotate the polygon around the origin
-            self.canvas.coords(poly, *points)  # Update the polygon coordinates using canvas.coords method
 
 
-    # TODO join create points and rotate points into one method
-    # TODO store points in element object? Used for collision / selection detection, rescaling, etc.
-    # TODO move these methods to a separate class for polygon manipulation, in Element class?
+    def update_element(self, element):
+        # Calculate coordinates for the rectangle's corners with rotation
+        updated_points = self.create_rotated_points(element)
+        # Create polygon representing the rectangle with rotation
+        self.canvas.coords(element.tkinter_id, updated_points)          
 
-    def create_points(self, x, y, width, height):
+    
+    def create_rotated_points(self, element):
+        """
+        Create a set of points for rotated rectangle.
+        Input: x, y, angle, width, height
+        Return: points Integer tuple
+        """
+        # Get coordinates and angle from the pose, assume (x, y, orientation)
+        x, y, orientation = element.pose
+        width, height = element.size
         # Calculate coordinates for the rectangle's corners without rotation
         # Use "bellybutton" coordinates (center of the front face) as the origin
         x1 = x - width / 2
         x2 = x + width / 2
         y1 = y
         y2 = y + height
-        # Create polygon representing the rectangle without rotation
-        return (x1, y1, x2, y1, x2, y2, x1, y2)
+        # Create points representing the rectangle without rotation
+        points = [x1, y1, x2, y1, x2, y2, x1, y2]
+        # Rotate the points around the "bellybutton" and return the rotated points
+        rotated_points = self.rotate_points(points, math.radians(orientation), (x,y))
+        # Convert the rotated points to integers to avoid TkInter bug with float coordinates
+        integer_points = [int(point) for point in rotated_points]
+        return integer_points
 
 
     def rotate_points(self, points, angle, center):
-        """Rotate a point clockwise by a given angle around a given origin."""
-        return [(math.cos(angle) * (px-center[0]) + math.sin(angle) * (py-center[1]) + center[0],
-                -math.sin(angle) * (px-center[0]) + math.cos(angle) * (py-center[1]) + center[1]) for px, py in zip(points[::2], points[1::2])]
-
+        """
+        Rotate a point clockwise by a given angle around a given origin.
+        Input: points List, angle Float, center Tuple
+        """
+        for i in range(0, len(points), 2):
+            px, py = points[i], points[i+1]
+            points[i] = math.cos(angle) * (px - center[0]) + math.sin(angle) * (py - center[1]) + center[0]
+            points[i+1] = -math.sin(angle) * (px - center[0]) + math.cos(angle) * (py - center[1]) + center[1]
+        return points
