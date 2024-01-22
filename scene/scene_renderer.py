@@ -34,30 +34,19 @@ class SceneRenderer:
             # Get coordinates and angle from the pose, assume t(x, y, orientation)
             x, y, orientation = element.pose
             width, height = element.size
-            # Calculate coordinates for the rectangle's corners without rotation
-            points = self.create_points(x, y, width, height)
-            print(f"Points: {points}")
-            # Create polygon representing the rectangle without rotation
+            # Calculate coordinates for the rectangle's corners with rotation
+            points = self.create_rotated_points(x, y, orientation, width, height)
+            # Create polygon representing the rectangle with rotation
             poly = self.canvas.create_polygon(points, outline=self.settings.element_outline, fill=self.settings.element_fill)  # Assign the polygon's ID to poly
             # Store the ID of the polygon in the element's tkinter_id attribute
             element.tkinter_id = poly
-            # Rotate the polygon points and update the polygon coordinates
-            points = self.rotate_points(self.canvas.coords(poly), math.radians(orientation), (x, y))  # Rotate the polygon around the origin
-            unpacked_points = [point for pair in points for point in pair]  # Unpack the points from a list of tuples to a list of numbers
-            integer_points = [int(point) for point in unpacked_points]  # Convert the points to integers
-            print(f"Rotated points: {unpacked_points}")
-            print(f"Integer points: {integer_points}")
-            # Ensure points are valid before updating polygon coordinates
-
-            self.canvas.coords(poly, integer_points)
-
-            # self.canvas.coords(poly, *points)  # Update the polygon coordinates using canvas.coords method
 
 
-    # TODO join create points and rotate points into one method
+    # TODO update create_points method to create_rotated_points method
     # TODO store points in element object? Used for collision / selection detection, rescaling, etc.
     # TODO move these methods to a separate class for polygon manipulation, in Element class?
 
+    # TODO old create_points method, remove later
     def create_points(self, x, y, width, height):
         # Calculate coordinates for the rectangle's corners without rotation
         # Use "bellybutton" coordinates (center of the front face) as the origin
@@ -67,10 +56,35 @@ class SceneRenderer:
         y2 = y + height
         # Create polygon representing the rectangle without rotation
         return (x1, y1, x2, y1, x2, y2, x1, y2)
-
+    
+    # TODO new create_rotated_points method, keep
+    def create_rotated_points(self, x, y, angle, width, height):
+        """
+        Create a set of points for rotated rectangle.
+        Input: x, y, angle, width, height
+        Return: points Integer tuple
+        """
+        # Calculate coordinates for the rectangle's corners without rotation
+        # Use "bellybutton" coordinates (center of the front face) as the origin
+        x1 = x - width / 2
+        x2 = x + width / 2
+        y1 = y
+        y2 = y + height
+        # Create points representing the rectangle without rotation
+        points = (x1, y1, x2, y1, x2, y2, x1, y2)
+        # Rotate the points around the "bellybutton" and return the rotated points
+        rotated_points = self.rotate_points(points, math.radians(angle), (x,y))
+        # Convert the rotated points to integers to avoid TkInter bug with float coordinates
+        integer_points = [int(point) for point in rotated_points]
+        return integer_points
 
     def rotate_points(self, points, angle, center):
-        """Rotate a point clockwise by a given angle around a given origin."""
-        return [(math.cos(angle) * (px-center[0]) + math.sin(angle) * (py-center[1]) + center[0],
-                -math.sin(angle) * (px-center[0]) + math.cos(angle) * (py-center[1]) + center[1]) for px, py in zip(points[::2], points[1::2])]
+        """
+        Rotate a point clockwise by a given angle around a given origin.
+        Input: points Tuple, angle Float, center Tuple
+        Return: rotated_points flattened list of points
+        """
+        rotated_points = [(math.cos(angle) * (px-center[0]) + math.sin(angle) * (py-center[1]) + center[0],
+                          -math.sin(angle) * (px-center[0]) + math.cos(angle) * (py-center[1]) + center[1]) for px, py in zip(points[::2], points[1::2])]
+        return [point for pair in rotated_points for point in pair]  # Flatten the list of tuples to a flat list of points
 
