@@ -10,7 +10,9 @@ class SceneRenderer:
     def __init__(self, scene, settings=None):
         # Set the scene and display settings
         self.scene = scene
+        self.ray_id = None
         self.settings = settings or Settings()
+
         # Initialize the renderer with a TkInter canvas and reconfigure for single infinite grid
         self.root = Tk()
         self.root.columnconfigure(0, weight=1)
@@ -42,16 +44,25 @@ class SceneRenderer:
         # Get the positions of all elements
         positions = [element.pose[:2] for element in elements]  # We only need x and y coordinates
 
-        # Draw lines between all elements
-        for i in range(len(positions) - 1):
-            self.canvas.create_line(positions[i], positions[i+1], fill=self.settings.ray_color)
+        # Draw a polygon between all elements, no outline and disabled state to avoid user interaction
+        if self.ray_id is None:
+            self.ray_id = self.canvas.create_polygon(*positions, fill='', outline=self.settings.ray_color, state='disabled')
+        else:
+            self.update_ray(positions)
 
 
     def update_element(self, element):
         # Calculate coordinates for the rectangle's corners with rotation
         updated_points = self.create_rotated_points(element)
         # Create polygon representing the rectangle with rotation
-        self.canvas.coords(element.tkinter_id, updated_points)          
+        self.canvas.coords(element.tkinter_id, updated_points)
+
+
+    def update_ray(self, elements):
+        # Get the positions of all elements
+        positions = [element.pose[:2] for element in elements]  # We only need x and y coordinates
+        # Update the coordinates of the existing polygon
+        self.canvas.coords(self.ray_id, *positions) 
 
     
     def create_rotated_points(self, element):
