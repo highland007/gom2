@@ -22,6 +22,7 @@ class SceneRenderer:
     def render(self):
         # Render the scene using the TkInter canvas
         self.render_elements(self.scene.root_assembly.elements)
+        self.render_ray(self.scene.root_assembly.elements)
         # Set the focus to the canvas widget after rendering
         self.canvas.focus_set()
 
@@ -35,6 +36,15 @@ class SceneRenderer:
             poly = self.canvas.create_polygon(polygon_points, outline=self.settings.element_outline, fill=self.settings.element_fill)  # Assign the polygon's ID to poly
             # Store the ID of the polygon in the element's tkinter_id attribute
             element.tkinter_id = poly
+
+
+    def render_ray(self, elements):
+        # Get the positions of all elements
+        positions = [element.pose[:2] for element in elements]  # We only need x and y coordinates
+
+        # Draw lines between all elements
+        for i in range(len(positions) - 1):
+            self.canvas.create_line(positions[i], positions[i+1], fill=self.settings.ray_color)
 
 
     def update_element(self, element):
