@@ -40,17 +40,6 @@ class SceneRenderer:
             element.tkinter_id = poly
 
 
-    def render_ray(self, elements):
-        # Get the positions of all elements
-        positions = [element.pose[:2] for element in elements]  # We only need x and y coordinates
-
-        # Draw a polygon between all elements, no outline and disabled state to avoid user interaction
-        if self.ray_id is None:
-            self.ray_id = self.canvas.create_polygon(*positions, fill='', outline=self.settings.ray_color, state='disabled')
-        else:
-            self.update_ray(positions)
-
-
     def update_element(self, element):
         # Calculate coordinates for the rectangle's corners with rotation
         updated_points = self.create_rotated_points(element)
@@ -58,13 +47,32 @@ class SceneRenderer:
         self.canvas.coords(element.tkinter_id, updated_points)
 
 
-    def update_ray(self, elements):
-        # Get the positions of all elements
-        positions = [element.pose[:2] for element in elements]  # We only need x and y coordinates
-        # Update the coordinates of the existing polygon
-        self.canvas.coords(self.ray_id, *positions) 
+    def render_ray(self, elements):
+        # Trace the ray through the elements
+        positions = self.trace_ray(elements[0].pose, elements)
+        # Draw a ray as polygon between all elements, no outline and disabled state to avoid user interaction
+        if self.ray_id is None:
+            self.ray_id = self.canvas.create_polygon(*positions, fill='', outline=self.settings.ray_color, state='disabled')
+        else:
+            self.update_ray(positions)
 
+
+    def update_ray(self, elements):
+        # Trace the ray through the elements
+        positions = self.trace_ray(elements[0].pose, elements)
+        # Update the coordinates of the existing polygon
+        self.canvas.coords(self.ray_id, *positions)
+
+
+    def trace_ray(self, ray_pose, elements):
+        # Trace the ray through all elements
+        positions = [ray_pose[:2]]  # Start with the initial ray position
+        for element in elements:
+            ray_pose = element.trace_ray(ray_pose)
+            positions.append(ray_pose[:2])  # Add the new ray position to the list
+        return positions
     
+
     def create_rotated_points(self, element):
         """
         Create a set of points for rotated rectangle.
