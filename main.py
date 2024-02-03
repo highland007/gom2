@@ -3,6 +3,7 @@
 
 from gom.assembly import Assembly
 from gom.element import Element
+from gom.ray import Ray
 from gom.scene import Scene
 from scene.scene_renderer import SceneRenderer
 from scene.scene_manager import SceneManager
@@ -14,6 +15,10 @@ def main():
     test_assembly.add_element(Element(element_type="mirror_1", size=(100, 25), pose=(200, 100, 0)))
     test_assembly.add_element(Element(element_type="mirror_2", size=(125, 35), pose=(400, 400, 60)))
 
+    # Create a test ray with an initial pose (x, y, angle)
+    test_ray = Ray(pose=(100, 100, 0))
+    test_ray.trace_ray(test_assembly.elements)
+    print(test_ray)
 
     # Create the scene with the test assembly as the root assembly
     scene = Scene(root_assembly=test_assembly)
