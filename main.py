@@ -12,16 +12,16 @@ def main():
     # Create a simple test assembly with two elements (replace with your assembly setup)
     # pose is (x, y, orientation) in pixels and angle in degrees
     test_assembly = Assembly(pose=(0, 0, 0))
-    test_assembly.add_element(Element(element_type="mirror_1", size=(100, 25), pose=(200, 100, 0)))
-    test_assembly.add_element(Element(element_type="mirror_2", size=(125, 35), pose=(400, 400, 60)))
+    test_assembly.add_element(Element(element_type="mirror_1", size=(100, 25), pose=(800, 100, 90)))
+    test_assembly.add_element(Element(element_type="mirror_2", size=(125, 35), pose=(400, 300, 150)))
 
     # Create a test ray with an initial pose (x, y, angle)
     test_ray = Ray(pose=(100, 100, 0))
     test_ray.trace_ray(test_assembly.elements)
-    # print(test_ray.ray_path)
+    print(test_ray.ray_path)
 
-    # Create the scene with the test assembly as the root assembly
-    scene = Scene(root_assembly=test_assembly)
+    # Create the scene with the test assembly as the root assembly and ray
+    scene = Scene(root_assembly=test_assembly, ray=test_ray)
 
     # Create a scene renderer and manager, and pass the scene and renderer to the manager
     renderer = SceneRenderer(scene)

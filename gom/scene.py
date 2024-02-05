@@ -4,9 +4,10 @@
 from gom.base import Serializable
 
 class Scene(Serializable):
-    def __init__(self, root_assembly):
+    def __init__(self, root_assembly, ray):
         # Initialize the scene with the root assembly
         self.root_assembly = root_assembly
+        self.ray = ray
 
     def to_json(self):
         # Convert scene to a JSON-compatible format

@@ -2,7 +2,6 @@
 # Defines the Ray class for general optical models
 
 import math
-import icecream as ic
 
 class Ray():
     def __init__(self, pose, max_coords=600, max_segments=5):
@@ -38,11 +37,19 @@ class Ray():
                 element_segment = self.create_segment(element.pose, element.size)
 
                 # Find if the ray is intersecting the element
-                if self.find_intersection(ray_segment, element_segment):
+                intersection = self.find_intersection(ray_segment, element_segment)
+                if intersection is not None:
+                    # Make tupe of intersection point and ray angle
+                    incident_ray = (intersection[0], intersection[1], self.ray_path[-1][2])
+                    # Add the intersection point to the ray_path
+                    self.ray_path.append(incident_ray)
                     # Trace the ray through the element with its method
                     new_ray = element.trace_ray(self.ray_path[-1])
                     # Add the new ray to the ray_path
                     self.ray_path.append(new_ray)
+
+                # TODO scene bounday conditions
+                # TODO improve the ray trace with the closest intersection
         
         return self.ray_path
 
