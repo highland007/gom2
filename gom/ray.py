@@ -28,29 +28,36 @@ class Ray():
                 break
 
             # Iterate over the elements in the assembly
-            for element in assembly:
+            for element in assembly.elements:
 
                 # Convert the curent ray segment pose (x,y,alpha) to parametric form (x,y,dx,dy)
                 ray_segment = self.parametric_form(self.ray_path[-1])
+                print(f"Ray segment: {ray_segment}")
 
                 # Segment the element (pose, width) into parametric form (x,y,dx,dy)
                 element_segment = self.create_segment(element.pose, element.size)
+                print(f"Element segment: {element_segment}")
 
                 # Find if the ray is intersecting the element
                 intersection = self.find_intersection(ray_segment, element_segment)
                 if intersection is not None:
+                    print(f"Intersection point: {intersection}")
                     # Make tupe of intersection point and ray angle
                     incident_ray = (intersection[0], intersection[1], self.ray_path[-1][2])
+                    print(f"Incident ray: {incident_ray}")
                     # Add the intersection point to the ray_path
                     self.ray_path.append(incident_ray)
                     # Trace the ray through the element with its method
                     new_ray = element.trace_ray(self.ray_path[-1])
+                    print(f"New ray: {new_ray}")
                     # Add the new ray to the ray_path
                     self.ray_path.append(new_ray)
 
+                # TODO ensure proper direction of the ray segment and separation from current element (avoid self-intersection)
                 # TODO scene bounday conditions
                 # TODO improve the ray trace with the closest intersection
         
+        print(f"Ray path: {self.ray_path}")
         return self.ray_path
 
 

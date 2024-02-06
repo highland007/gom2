@@ -17,7 +17,7 @@ def main():
 
     # Create a test ray with an initial pose (x, y, angle)
     test_ray = Ray(pose=(100, 100, 0))
-    test_ray.trace_ray(test_assembly.elements)
+    test_ray.trace_ray(test_assembly)
     print(test_ray.ray_path)
 
     # Create the scene with the test assembly as the root assembly and ray
