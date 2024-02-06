@@ -64,11 +64,11 @@ def find_ray_segment_intersection(ray, segment):
 
 # Testing with a slightly modified example
 # Ray: Origin (1, 2) with direction angle 45 degrees
-ray = parametric_form(1, 2, 45)
+ray = parametric_form(0, 0, 0)
 print(f"Ray: {ray}")
 
 # Mirror Segment: Origin (1, 1) with direction angle 135 degrees and width 2
-segment = create_segment(3, 3, 135, 2)
+segment = create_segment(-2, 0, 135, 2)
 print(f"Segment: {segment}")
 
 # Find intersection with debug

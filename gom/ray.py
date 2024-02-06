@@ -4,11 +4,11 @@
 import math
 
 class Ray():
-    def __init__(self, pose, max_coords=600, max_segments=5):
+    def __init__(self, pose, max_length=1000, max_segments=5):
         # Initialize a ray with initial pose (origin) and max number of segments
         self.pose = pose                    # Tuple (x, y, orientation)
         self.ray_path = [pose]              # List of ray segments (x, y, angle)
-        self.max_coords = max_coords        # Integer for max x, y coordinates
+        self.max_length = max_length        # Integer for max x, y coordinates
         self.max_segments = max_segments    # Integer for max number of ray segments
         self.type = 'ray'                   # 'ray'
         self.tkinter_id = None              # Add this line to store the TkInter ID of the element for rendering
@@ -30,13 +30,13 @@ class Ray():
             # Iterate over the elements in the assembly
             for element in assembly.elements:
 
-                # Convert the curent ray segment pose (x,y,alpha) to parametric form (x,y,dx,dy)
-                ray_segment = self.parametric_form(self.ray_path[-1])
-                print(f"Ray segment: {ray_segment}")
-
                 # Segment the element (pose, width) into parametric form (x,y,dx,dy)
-                element_segment = self.create_segment(element.pose, element.size)
+                element_segment = self.create_element_segment(element.pose, element.size[0])
                 print(f"Element segment: {element_segment}")
+
+                # Segment the ray pose (x,y,alpha) to parametric form (x,y,dx,dy)
+                ray_segment = self.create_ray_segment(self.ray_path[-1], self.max_length)
+                print(f"Ray segment: {ray_segment}")
 
                 # Find if the ray is intersecting the element
                 intersection = self.find_intersection(ray_segment, element_segment)
@@ -63,7 +63,7 @@ class Ray():
 
     def parametric_form(self, pose):
         """
-        Returns the parametric form coefficients of a ray given its origin and direction angle. 
+        Returns the parametric form coefficients of a line given its origin and direction angle. 
         Input: pose of ray or segment pose tuple (x, y, angle)
         Output: x0, y0, dx, dy
         """
@@ -77,15 +77,15 @@ class Ray():
         return (x0, y0, math.cos(rad), math.sin(rad))
 
 
-    def create_segment(self, pose, size):
+    def create_element_segment(self, pose, width):
         """
         Creates a segment given the midpoint, angle, and width.
-        Input: pose (x, y, angle), size (width, height) of element
+        Input: pose (x, y, angle), size width of element
         Output: segment (xs, ys, dxs, dys)
         """
         # Unpack the pose and size
         xm, ym, am = pose
-        w = size[0]
+        w = width
 
         # Create the segment from the element pose and size (width)
         seg_start = self.parametric_form((xm - w/2 * math.cos(math.radians(am)), ym - w/2 * math.sin(math.radians(am)), am))
@@ -94,8 +94,32 @@ class Ray():
         # Return the segment
         segment = (seg_start[0], seg_start[1], seg_end[0] - seg_start[0], seg_end[1] - seg_start[1])
         return segment
+    
+
+    def create_ray_segment(self, pose, length):
+        """
+        Creates a segment given the starting point, angle, and length.
+        Input: pose (x, y, angle), length of a ray segment
+        Output: segment (xs, ys, dxs, dys)
+        """
+        # Unpack the pose and length
+        x, y, angle = pose
+        l = length
+
+        # Calculate the ending point of the segment
+        xe = x + l * math.cos(math.radians(angle))
+        ye = y + l * math.sin(math.radians(angle))
+
+        # Calculate the direction vector of the segment
+        dx = xe - x
+        dy = ye - y
+
+        # Return the segment
+        segment = (x, y, dx, dy)
+        return segment
 
 
+    # TODO find intersection point of two segments (ray or element segment)
     def find_intersection(self, ray, segment):
         """
         Finds the intersection point of a ray and a segment, with debug outputs.

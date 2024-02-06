@@ -19,8 +19,9 @@ class Element(Serializable):
         '''
         # For now, just reflect the ray with a mirror adding 10 degrees to the angle
         # TODO add real mirror physics, angle and position calculations
-        return (ray_pose[0], ray_pose[1], ray_pose[2] + 225)
-        # return (ray_pose[0], ray_pose[1], ray_pose[2] + 10)
+        # TODO move ray points a small amount to avoid self-intersection
+        ds = 1e-0
+        return (ray_pose[0] - ds, ray_pose[1] - ds, ray_pose[2] + 225)
 
     def to_json(self):
         # Convert element to a JSON-compatible format
