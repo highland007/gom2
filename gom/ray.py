@@ -2,6 +2,7 @@
 # Defines the Ray class for general optical models
 
 import math
+from gom.parametric import create_element_segment, create_ray_segment, find_intersection
 
 class Ray():
     def __init__(self, pose, max_length=1000, max_segments=5):
@@ -22,21 +23,23 @@ class Ray():
         # Restart with the initial ray pose on every trace
         self.ray_path = [self.pose]
 
+        # TODO remove print statements
+
         print(f"Starting ray trace at {self.pose}")
 
         # Iterate over the elements in the assembly
         for element in assembly.elements:
 
             # Segment the element (pose, width) into parametric form (x,y,dx,dy)
-            element_segment = self.create_element_segment(element.pose, element.size[0])
+            element_segment = create_element_segment(element.pose, element.size[0])
             print(f"Element segment: {element_segment}")
 
             # Segment the ray pose (x,y,alpha) to parametric form (x,y,dx,dy)
-            ray_segment = self.create_ray_segment(self.ray_path[-1], self.max_length)
+            ray_segment = create_ray_segment(self.ray_path[-1], self.max_length)
             print(f"Ray segment: {ray_segment}")
 
             # Find if the ray is intersecting the element or leaving the scene
-            intersection = self.find_intersection(ray_segment, element_segment)
+            intersection = find_intersection(ray_segment, element_segment)
             if intersection is not None:
                 print(f"Intersection point: {intersection}")
                 # Make tupe of intersection point and ray angle
@@ -60,93 +63,3 @@ class Ray():
         
         print(f"Ray path: {self.ray_path}")
         return self.ray_path
-
-
-    def parametric_form(self, pose):
-        """
-        Returns the parametric form coefficients of a line given its origin and direction angle. 
-        Input: pose of ray or segment pose tuple (x, y, angle)
-        Output: x0, y0, dx, dy
-        """
-        # Unpack the pose
-        x0, y0, a = pose
-
-        # Convert the angle to radians
-        rad = math.radians(a)
-        
-        # Return the parametric form coefficients
-        return (x0, y0, math.cos(rad), math.sin(rad))
-
-
-    def create_element_segment(self, pose, width):
-        """
-        Creates a segment given the midpoint, angle, and width.
-        Input: pose (x, y, angle), size width of element
-        Output: segment (xs, ys, dxs, dys)
-        """
-        # Unpack the pose and size
-        xm, ym, am = pose
-        w = width
-
-        # Create the segment from the element pose and size (width)
-        seg_start = self.parametric_form((xm - w/2 * math.cos(math.radians(am)), ym - w/2 * math.sin(math.radians(am)), am))
-        seg_end = self.parametric_form((xm + w/2 * math.cos(math.radians(am)), ym + w/2 * math.sin(math.radians(am)), am))
-        
-        # Return the segment
-        segment = (seg_start[0], seg_start[1], seg_end[0] - seg_start[0], seg_end[1] - seg_start[1])
-        return segment
-    
-
-    def create_ray_segment(self, pose, length):
-        """
-        Creates a segment given the starting point, angle, and length.
-        Input: pose (x, y, angle), length of a ray segment
-        Output: segment (xs, ys, dxs, dys)
-        """
-        # Unpack the pose and length
-        x, y, angle = pose
-        l = length
-
-        # Calculate the ending point of the segment
-        xe = x + l * math.cos(math.radians(angle))
-        ye = y + l * math.sin(math.radians(angle))
-
-        # Calculate the direction vector of the segment
-        dx = xe - x
-        dy = ye - y
-
-        # Return the segment
-        segment = (x, y, dx, dy)
-        return segment
-
-
-    # TODO find intersection point of two segments (ray or element segment)
-    def find_intersection(self, segment1, segment2):
-        """
-        Finds the intersection point of a ray and a segment, with debug outputs.
-        Input: ray, segment
-        Output: intersection point (xi, yi)
-        """
-        # Unpack the ray and element segment parameters
-        x0, y0, dx, dy = segment1
-        xs, ys, dxs, dys = segment2
-
-        # Check if the lines are parallel (cross product is zero)
-        cross_product = dx * dys - dy * dxs
-        if cross_product == 0:
-            return None # No intersection (parallel or coincident lines)
-
-        # Compute the parameter t for the intersection point on segment 1
-        t = ((xs - x0) * dys - (ys - y0) * dxs) / cross_product
-
-        # Compute the parameter s for the intersection point on segment 2
-        s = ((xs - x0) * dy - (ys - y0) * dx) / cross_product
-
-        # Check if the intersection point is within the segment bounds (0 <= s <= 1)
-        if 0 <= s <= 1 and 0 <= t <= 1:
-            # Calculate the intersection point
-            xi = x0 + t * dx
-            yi = y0 + t * dy
-            return (xi, yi)
-        else:
-            return None  # No intersection within the segment bounds
