@@ -53,7 +53,7 @@ def find_ray_segment_intersection(ray, segment):
     print(f"ray t: {t}, segment s: {s}")
 
     # Check if the intersection point is within the segment bounds (0 <= s <= 1)
-    if 0 <= s <= 1:
+    if 0 <= s <= 1 and 0 <= t <= 1:
         # Calculate the intersection point
         xi = x0 + t * dx
         yi = y0 + t * dy
@@ -68,7 +68,7 @@ ray = parametric_form(0, 0, 0)
 print(f"Ray: {ray}")
 
 # Mirror Segment: Origin (1, 1) with direction angle 135 degrees and width 2
-segment = create_segment(-2, 0, 135, 2)
+segment = create_segment(1, 0, 135, 2)
 print(f"Segment: {segment}")
 
 # Find intersection with debug

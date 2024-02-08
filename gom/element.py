@@ -21,7 +21,7 @@ class Element(Serializable):
         # TODO add real mirror physics, angle and position calculations
         # TODO move ray points a small amount to avoid self-intersection
         ds = 1e-0
-        return (ray_pose[0] - ds, ray_pose[1] - ds, ray_pose[2] + 225)
+        return (ray_pose[0] - ds, ray_pose[1] - ds, ray_pose[2] + 135)
 
     def to_json(self):
         # Convert element to a JSON-compatible format

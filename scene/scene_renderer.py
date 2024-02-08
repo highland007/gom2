@@ -56,7 +56,7 @@ class SceneRenderer:
         # print(ray_points)
         # Draw a ray as polygon between all elements, no outline and disabled state to avoid user interaction
         if self.ray_id is None:
-            self.ray_id = self.canvas.create_polygon(ray_points, fill='', outline=self.settings.ray_color, state='disabled')
+            self.ray_id = self.canvas.create_line(ray_points, fill=self.settings.ray_color, state='disabled')
         else:
             self.canvas.coords(self.ray_id, ray_segment[0], ray_segment[1], ray_segment[0], ray_segment[1])
 

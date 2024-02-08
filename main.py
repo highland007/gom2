@@ -13,7 +13,7 @@ def main():
     # pose is (x, y, orientation) in pixels and angle in degrees
     test_assembly = Assembly(pose=(0, 0, 0))
     test_assembly.add_element(Element(element_type="mirror_1", size=(100, 25), pose=(800, 100, 90)))
-    test_assembly.add_element(Element(element_type="mirror_2", size=(125, 35), pose=(400, 300, 150)))
+    test_assembly.add_element(Element(element_type="mirror_2", size=(125, 35), pose=(600, 300, 150)))
 
     # Create a test ray with an initial pose (x, y, angle)
     test_ray = Ray(pose=(100, 100, 0))

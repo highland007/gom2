@@ -22,40 +22,41 @@ class Ray():
         # Restart with the initial ray pose on every trace
         self.ray_path = [self.pose]
 
-        # Trace the ray through the assembly or until the max number of segments is reached
-        for _ in range(self.max_segments):
+        print(f"Starting ray trace at {self.pose}")
+
+        # Iterate over the elements in the assembly
+        for element in assembly.elements:
+
+            # Segment the element (pose, width) into parametric form (x,y,dx,dy)
+            element_segment = self.create_element_segment(element.pose, element.size[0])
+            print(f"Element segment: {element_segment}")
+
+            # Segment the ray pose (x,y,alpha) to parametric form (x,y,dx,dy)
+            ray_segment = self.create_ray_segment(self.ray_path[-1], self.max_length)
+            print(f"Ray segment: {ray_segment}")
+
+            # Find if the ray is intersecting the element or leaving the scene
+            intersection = self.find_intersection(ray_segment, element_segment)
+            if intersection is not None:
+                print(f"Intersection point: {intersection}")
+                # Make tupe of intersection point and ray angle
+                incident_ray = (intersection[0], intersection[1], self.ray_path[-1][2])
+                print(f"Incident ray: {incident_ray}")
+                # Add the intersection point to the ray_path
+                self.ray_path.append(incident_ray)
+                # Trace the ray through the element with its method
+                new_ray = element.trace_ray(self.ray_path[-1])
+                print(f"New ray: {new_ray}")
+                # Add the new ray to the ray_path
+                self.ray_path.append(new_ray)
+
+            # Break the loop if the max number of segments is reached
             if len(self.ray_path) >= self.max_segments:
                 break
 
-            # Iterate over the elements in the assembly
-            for element in assembly.elements:
-
-                # Segment the element (pose, width) into parametric form (x,y,dx,dy)
-                element_segment = self.create_element_segment(element.pose, element.size[0])
-                print(f"Element segment: {element_segment}")
-
-                # Segment the ray pose (x,y,alpha) to parametric form (x,y,dx,dy)
-                ray_segment = self.create_ray_segment(self.ray_path[-1], self.max_length)
-                print(f"Ray segment: {ray_segment}")
-
-                # Find if the ray is intersecting the element
-                intersection = self.find_intersection(ray_segment, element_segment)
-                if intersection is not None:
-                    print(f"Intersection point: {intersection}")
-                    # Make tupe of intersection point and ray angle
-                    incident_ray = (intersection[0], intersection[1], self.ray_path[-1][2])
-                    print(f"Incident ray: {incident_ray}")
-                    # Add the intersection point to the ray_path
-                    self.ray_path.append(incident_ray)
-                    # Trace the ray through the element with its method
-                    new_ray = element.trace_ray(self.ray_path[-1])
-                    print(f"New ray: {new_ray}")
-                    # Add the new ray to the ray_path
-                    self.ray_path.append(new_ray)
-
-                # TODO ensure proper direction of the ray segment and separation from current element (avoid self-intersection)
-                # TODO scene bounday conditions
-                # TODO improve the ray trace with the closest intersection
+            # TODO ensure proper direction of the ray segment and separation from current element (avoid self-intersection)
+            # TODO scene bounday conditions
+            # TODO improve the ray trace with the closest intersection
         
         print(f"Ray path: {self.ray_path}")
         return self.ray_path
@@ -120,29 +121,29 @@ class Ray():
 
 
     # TODO find intersection point of two segments (ray or element segment)
-    def find_intersection(self, ray, segment):
+    def find_intersection(self, segment1, segment2):
         """
         Finds the intersection point of a ray and a segment, with debug outputs.
         Input: ray, segment
         Output: intersection point (xi, yi)
         """
         # Unpack the ray and element segment parameters
-        x0, y0, dx, dy = ray
-        xs, ys, dxs, dys = segment
+        x0, y0, dx, dy = segment1
+        xs, ys, dxs, dys = segment2
 
         # Check if the lines are parallel (cross product is zero)
         cross_product = dx * dys - dy * dxs
         if cross_product == 0:
             return None # No intersection (parallel or coincident lines)
 
-        # Compute the parameter t for the intersection point on the ray
+        # Compute the parameter t for the intersection point on segment 1
         t = ((xs - x0) * dys - (ys - y0) * dxs) / cross_product
 
-        # Compute the parameter s for the intersection point on the segment
+        # Compute the parameter s for the intersection point on segment 2
         s = ((xs - x0) * dy - (ys - y0) * dx) / cross_product
 
         # Check if the intersection point is within the segment bounds (0 <= s <= 1)
-        if 0 <= s <= 1:
+        if 0 <= s <= 1 and 0 <= t <= 1:
             # Calculate the intersection point
             xi = x0 + t * dx
             yi = y0 + t * dy
