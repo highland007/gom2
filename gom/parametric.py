@@ -1,5 +1,5 @@
 # gom/parametric.py
-# Parametric line forms and calculations for optical ray tracing
+# Parametric segment math for optical ray tracing functions
 
 import math
 
@@ -99,18 +99,20 @@ def calculate_normal(segment):
     return dys, -dxs
 
 
-def calculate_reflected_ray(ray, segment):
-    """ Calculate the specular reflection of a ray on a mirror segment. """
-    intersection = find_ray_segment_intersection(ray, segment)
-    if intersection is None:
-        return None  # No intersection, no reflection
-
-    # Calculate the normal to the segment at the intersection point
+def calculate_reflection(ray, segment):
+    """ Calculate the specular reflection of a ray on a mirror segment.
+    Input: ray (x0, y0, dx, dy), segment (xs, ys, dxs, dys)
+    Output: reflected_ray_origin (x, y), reflected_angle
+    """
+    # Calculate the normal to the element segment at the intersection point
     normal = calculate_normal(segment)
     nx, ny = normal
 
+    # Calculate ray segment from the ray origin and a unit length
+    ray_segment = create_ray_segment(ray, 1.0)
+
     # Ray direction
-    _, _, dx, dy = ray
+    _, _, dx, dy = ray_segment
 
     # Normalize the normal vector
     norm_length = math.sqrt(nx**2 + ny**2)
@@ -123,10 +125,7 @@ def calculate_reflected_ray(ray, segment):
     reflected_dx = dx - 2 * dot_product * nx
     reflected_dy = dy - 2 * dot_product * ny
 
-    # Reflected ray starts at the intersection point
-    reflected_ray_origin = intersection
-
     # Convert reflected direction into an angle
     reflected_angle = math.degrees(math.atan2(reflected_dy, reflected_dx))
 
-    return reflected_ray_origin, reflected_angle
+    return reflected_angle
