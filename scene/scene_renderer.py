@@ -48,24 +48,24 @@ class SceneRenderer:
 
 
     def render_ray(self, ray):
+        # Trace ray through the elements and render the ray path
+        ray.trace_ray(self.scene.root_assembly)
         # Get the ray points from the ray path as a list of tuples (x, y)
         ray_points = []
         for ray_segment in ray.ray_path:
             ray_points.append(ray_segment[0:2])
-        # TODO check points
-        # print(ray_points)
-        # Draw a ray as polygon between all elements, no outline and disabled state to avoid user interaction
+        print(f"Ray points: {ray_points}")
+        # Draw a ray as segmented line, disabled state to avoid user interaction
         if self.ray_id is None:
             self.ray_id = self.canvas.create_line(ray_points, fill=self.settings.ray_color, state='disabled')
         else:
-            self.canvas.coords(self.ray_id, ray_segment[0], ray_segment[1], ray_segment[0], ray_segment[1])
+            #  Asterisk (*) because coords expects separate arguments for each coordinate, not a list of coordinates
+            self.canvas.coords(self.ray_id, *ray_points)
 
+        # TODO print assembly and ray ids for debugging
+        print(f"SceneRenderer update_ray: root_assembly id={id(self.scene.root_assembly)}, ray id={id(self.scene.ray)}")
+        print(f"SceneRenderer update_ray: root_assembly id={id(self.scene.root_assembly)}, ray id={id(ray)}")
 
-    def update_ray(self, elements):
-        # Trace the ray through the elements
-        positions = self.trace_ray(elements[0].pose, elements)
-        # Update the coordinates of the existing polygon
-        self.canvas.coords(self.ray_id, *positions)
 
 
     def create_rotated_points(self, element):

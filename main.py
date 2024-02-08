@@ -18,13 +18,16 @@ def main():
 
     # Create a test ray with an initial pose (x, y, angle)
     test_ray = Ray(pose=(100, 100, 0))
-    test_ray.trace_ray(test_assembly)
-    print(test_ray.ray_path)
+
+    # Trace the ray through the test assembly and print the ray path possibly to the console/file
+    # test_ray.trace_ray(test_assembly)
+    # print(test_ray.ray_path)
 
     # Create the scene with the test assembly as the root assembly and ray
     scene = Scene(root_assembly=test_assembly, ray=test_ray)
 
     # Create a scene renderer and manager, and pass the scene and renderer to the manager
+    # Ray tracing and rendering is handled by the renderer, user input by the manager
     renderer = SceneRenderer(scene)
     manager = SceneManager(scene, renderer, renderer.canvas)
 
