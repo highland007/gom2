@@ -5,7 +5,7 @@ import math
 from gom.parametric import create_element_segment, create_ray_segment, find_intersection
 
 class Ray():
-    def __init__(self, pose, max_length=1000, max_segments=5):
+    def __init__(self, pose, max_length=1000, max_segments=10):
         # Initialize a ray with initial pose (origin) and max number of segments
         self.pose = pose                    # Tuple (x, y, orientation)
         self.ray_path = [pose]              # List of ray segments (x, y, angle)
