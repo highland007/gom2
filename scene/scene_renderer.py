@@ -10,7 +10,9 @@ class SceneRenderer:
     def __init__(self, scene, settings=None):
         # Set the scene and display settings
         self.scene = scene
+        self.ray_id = None
         self.settings = settings or Settings()
+
         # Initialize the renderer with a TkInter canvas and reconfigure for single infinite grid
         self.root = Tk()
         self.root.columnconfigure(0, weight=1)
@@ -22,6 +24,7 @@ class SceneRenderer:
     def render(self):
         # Render the scene using the TkInter canvas
         self.render_elements(self.scene.root_assembly.elements)
+        self.render_ray(self.scene.ray)
         # Set the focus to the canvas widget after rendering
         self.canvas.focus_set()
 
@@ -41,9 +44,30 @@ class SceneRenderer:
         # Calculate coordinates for the rectangle's corners with rotation
         updated_points = self.create_rotated_points(element)
         # Create polygon representing the rectangle with rotation
-        self.canvas.coords(element.tkinter_id, updated_points)          
+        self.canvas.coords(element.tkinter_id, updated_points)
 
-    
+
+    def render_ray(self, ray):
+        # Trace ray through the elements and render the ray path
+        ray.trace_ray(self.scene.root_assembly)
+        # Get the ray points from the ray path as a list of tuples (x, y)
+        ray_points = []
+        for ray_segment in ray.ray_path:
+            ray_points.append(ray_segment[0:2])
+        print(f"Ray points: {ray_points}")
+        # Draw a ray as segmented line, disabled state to avoid user interaction
+        if self.ray_id is None:
+            self.ray_id = self.canvas.create_line(ray_points, fill=self.settings.ray_color, state='disabled')
+        else:
+            #  Asterisk (*) because coords expects separate arguments for each coordinate, not a list of coordinates
+            self.canvas.coords(self.ray_id, *ray_points)
+
+        # TODO print assembly and ray ids for debugging
+        print(f"SceneRenderer update_ray: root_assembly id={id(self.scene.root_assembly)}, ray id={id(self.scene.ray)}")
+        print(f"SceneRenderer update_ray: root_assembly id={id(self.scene.root_assembly)}, ray id={id(ray)}")
+
+
+
     def create_rotated_points(self, element):
         """
         Create a set of points for rotated rectangle.

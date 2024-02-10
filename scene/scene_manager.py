@@ -77,7 +77,12 @@ class SceneManager:
                 # Print new element pose
                 print(f"Element {element.type} was moved to {element.pose}")
                 # Update element on the screen with new coordinates
-                self.renderer.update_element(element)               
+                self.renderer.update_element(element)
+                # Update ray on the screen with new element coordinates
+                self.renderer.render_ray(self.scene.ray)
+                
+        # TODO print assembly and ray ids for debugging
+        print(f"SceneManager move_element: root_assembly id={id(self.scene.root_assembly)}, ray id={id(self.scene.ray)}")
             
 
     def rotate_element(self, event):
