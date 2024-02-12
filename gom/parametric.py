@@ -30,8 +30,8 @@ def create_element_segment(pose, width):
     w = width
 
     # Create the segment from the element pose and size (width)
-    seg_start = parametric_form((xm - w/2 * math.cos(math.radians(am)), ym - w/2 * math.sin(math.radians(am)), am))
-    seg_end = parametric_form((xm + w/2 * math.cos(math.radians(am)), ym + w/2 * math.sin(math.radians(am)), am))
+    seg_start = parametric_form((xm - w/2 * math.cos(math.radians(am + 90)), ym - w/2 * math.sin(math.radians(am + 90)), am))
+    seg_end = parametric_form((xm + w/2 * math.cos(math.radians(am + 90)), ym + w/2 * math.sin(math.radians(am + 90)), am))
         
     # Return the segment
     segment = (seg_start[0], seg_start[1], seg_end[0] - seg_start[0], seg_end[1] - seg_start[1])

@@ -34,10 +34,16 @@ class SceneRenderer:
         for element in elements:
             # Calculate coordinates for the rectangle's corners with rotation
             polygon_points = self.create_rotated_points(element)
-            # Create polygon representing the rectangle with rotation
+            # Create polygon representing the filled rectangle with rotation
             poly = self.canvas.create_polygon(polygon_points, outline=self.settings.element_outline, fill=self.settings.element_fill)  # Assign the polygon's ID to poly
             # Store the ID of the polygon in the element's tkinter_id attribute
             element.tkinter_id = poly
+            # TODO Display element segment for visual debugging - remove later
+            # Unpack element segment (x, y, dx, dy) and draw a line
+            x, y, dx, dy = element.element_segment
+            # Draw a line representing the element segment
+            line = self.canvas.create_line(x, y, x + dx, y + dy, fill=self.settings.element_segment, state='disabled')
+            element.tkinter_line_id = line
 
 
     def update_element(self, element):
@@ -45,6 +51,10 @@ class SceneRenderer:
         updated_points = self.create_rotated_points(element)
         # Create polygon representing the rectangle with rotation
         self.canvas.coords(element.tkinter_id, updated_points)
+        # TODO Display element segment for visual debugging - remove later
+        # Unpack element segment (x, y, dx, dy) and draw a line
+        x, y, dx, dy = element.element_segment
+        self.canvas.coords(element.tkinter_line_id, x, y, x + dx, y + dy)
 
 
     def render_ray(self, ray):
@@ -77,12 +87,16 @@ class SceneRenderer:
         # Get coordinates and angle from the pose, assume (x, y, orientation)
         x, y, orientation = element.pose
         width, height = element.size
-        # Calculate coordinates for the rectangle's corners without rotation
+        # Calculate coordinates for the rectangle's corners without rotation (angle=0 degrees) facing right
         # Use "bellybutton" coordinates (center of the front face) as the origin
-        x1 = x - width / 2
-        x2 = x + width / 2
-        y1 = y
-        y2 = y + height
+        # x1 = x - width / 2
+        # x2 = x + width / 2
+        # y1 = y
+        # y2 = y + height
+        x1 = x
+        x2 = x - height
+        y1 = y + width / 2
+        y2 = y - width / 2
         # Create points representing the rectangle without rotation
         points = [x1, y1, x2, y1, x2, y2, x1, y2]
         # Rotate the points around the "bellybutton" and return the rotated points
@@ -94,11 +108,12 @@ class SceneRenderer:
 
     def rotate_points(self, points, angle, center):
         """
-        Rotate a point clockwise by a given angle around a given origin.
+        Rotate a point counter-clockwise by a given angle around a given origin.
         Input: points List, angle Float, center Tuple
+        Output: points List
         """
         for i in range(0, len(points), 2):
             px, py = points[i], points[i+1]
-            points[i] = math.cos(angle) * (px - center[0]) + math.sin(angle) * (py - center[1]) + center[0]
-            points[i+1] = -math.sin(angle) * (px - center[0]) + math.cos(angle) * (py - center[1]) + center[1]
+            points[i] = math.cos(angle) * (px - center[0]) - math.sin(angle) * (py - center[1]) + center[0]
+            points[i+1] = math.sin(angle) * (px - center[0]) + math.cos(angle) * (py - center[1]) + center[1]
         return points

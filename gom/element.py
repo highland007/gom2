@@ -10,7 +10,8 @@ class Element(Serializable):
         self.pose = pose          # Tuple (x, y, orientation)        
         self.size = size          # Tuple (width, height)
         self.type = element_type  # 'mirror' or 'lens'
-        self.tkinter_id = None    # Add this line to store the TkInter ID of the element for rendering
+        self.tkinter_id = None    # Store the TkInter ID of the element for rendering
+        self.tkinter_line_id = None    # TODO Store the TkInter ID of the element segment for rendering
         # Segment the element (pose, width from size) into parametric form (x,y,dx,dy) for ray tracing
         self.element_segment = create_element_segment(self.pose, self.size[0])
 
