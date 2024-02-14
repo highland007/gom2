@@ -76,6 +76,8 @@ class SceneManager:
                 element.pose = (event.x, event.y, orientation)
                 # Print new element pose
                 print(f"Element {element.type} was moved to {element.pose}")
+              # Update element segment with new coordinates
+                element.update_segment()
                 # Update element on the screen with new coordinates
                 self.renderer.update_element(element)
                 # Update ray on the screen with new element coordinates
@@ -108,4 +110,8 @@ class SceneManager:
                 # TODO add alignment/aiming to mouse cursor or ray aiming later
                 element.pose = (x, y, orientation + 10)
                 # Update element on the screen with new coordinates
-                self.renderer.update_element(element)       
+                element.update_segment()
+                # Update element on the screen with new coordinates
+                self.renderer.update_element(element)
+                # Update ray on the screen with new element coordinates
+                self.renderer.render_ray(self.scene.ray)

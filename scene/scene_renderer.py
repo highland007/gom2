@@ -34,31 +34,34 @@ class SceneRenderer:
         # Render all elements on the canvas
         for element in elements:
 
-            # TODO change rendering to use front and back segments for elements
+            # TODO REMOVE after change rendering to use front and back segments for elements
 
             # Calculate coordinates for the rectangle's corners with rotation
-            polygon_points = create_rotated_points(element)
+            # polygon_points = create_rotated_points(element)
             # Create polygon representing the filled rectangle with rotation
-            poly = self.canvas.create_polygon(polygon_points, outline=self.settings.element_outline, fill=self.settings.element_fill)  # Assign the polygon's ID to poly
+            # poly = self.canvas.create_polygon(polygon_points, outline=self.settings.element_outline, fill=self.settings.element_fill)  # Assign the polygon's ID to poly
             # Store the ID of the polygon in the element's tkinter_id attribute
-            element.tkinter_id = poly
+            # element.tkinter_id = poly
+
             # TODO Display element segment for visual debugging - remove later
             # Unpack element segment (x, y, dx, dy) and draw a line
             x, y, dx, dy = element.element_segment
             # Draw a line representing the element segment
             line = self.canvas.create_line(x, y, x + dx, y + dy, fill=self.settings.element_segment, state='disabled')
-            element.tkinter_line_id = line
+            # Store the ID of the polygon in the element's tkinter_id attribute
+            element.tkinter_segment_id = line
 
 
     def update_element(self, element):
         # Calculate coordinates for the rectangle's corners with rotation
-        updated_points = create_rotated_points(element)
+        # updated_points = create_rotated_points(element)
         # Create polygon representing the rectangle with rotation
-        self.canvas.coords(element.tkinter_id, updated_points)
+        # self.canvas.coords(element.tkinter_id, updated_points)
+
         # TODO Display element segment for visual debugging - remove later
         # Unpack element segment (x, y, dx, dy) and draw a line
         x, y, dx, dy = element.element_segment
-        self.canvas.coords(element.tkinter_line_id, x, y, x + dx, y + dy)
+        self.canvas.coords(element.tkinter_segment_id, x, y, x + dx, y + dy)
 
 
     def render_ray(self, ray):

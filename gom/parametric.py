@@ -23,15 +23,15 @@ def parametric_form(pose):
     return (x0, y0, math.cos(rad), math.sin(rad))
 
 
-def create_element_segment(pose, width):
+def create_element_segment(element):
     """
     Creates a segment given the midpoint, angle, and width.
     Input: pose (x, y, angle), size width of element
     Output: segment (xs, ys, dxs, dys)
     """
     # Unpack the pose and size
-    xm, ym, am = pose
-    w = width
+    xm, ym, am = element.pose
+    w, h = element.size
 
     # Create the segment from the element pose and size (width)
     seg_start = parametric_form((xm - w/2 * math.cos(math.radians(am + 90)), ym - w/2 * math.sin(math.radians(am + 90)), am))
@@ -135,7 +135,7 @@ def calculate_reflection(ray, segment):
     return reflected_angle
 
 
-# TODO used for element rendering for polygon in scene_renderer.py
+# TODO REMOVE OLD used for element rendering for polygon in scene_renderer.py
 
 def create_rotated_points(element):
         """
