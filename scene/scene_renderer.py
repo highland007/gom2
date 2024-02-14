@@ -4,6 +4,7 @@
 from tkinter import *
 import math
 from gom.scene import Scene
+from gom.parametric import create_rotated_points
 from scene.settings import Settings  # Import the Settings class from the scene module
 
 class SceneRenderer:
@@ -32,8 +33,11 @@ class SceneRenderer:
     def render_elements(self, elements):
         # Render all elements on the canvas
         for element in elements:
+
+            # TODO change rendering to use front and back segments for elements
+
             # Calculate coordinates for the rectangle's corners with rotation
-            polygon_points = self.create_rotated_points(element)
+            polygon_points = create_rotated_points(element)
             # Create polygon representing the filled rectangle with rotation
             poly = self.canvas.create_polygon(polygon_points, outline=self.settings.element_outline, fill=self.settings.element_fill)  # Assign the polygon's ID to poly
             # Store the ID of the polygon in the element's tkinter_id attribute
@@ -48,7 +52,7 @@ class SceneRenderer:
 
     def update_element(self, element):
         # Calculate coordinates for the rectangle's corners with rotation
-        updated_points = self.create_rotated_points(element)
+        updated_points = create_rotated_points(element)
         # Create polygon representing the rectangle with rotation
         self.canvas.coords(element.tkinter_id, updated_points)
         # TODO Display element segment for visual debugging - remove later
@@ -75,45 +79,4 @@ class SceneRenderer:
         # TODO print assembly and ray ids for debugging
         print(f"SceneRenderer update_ray: root_assembly id={id(self.scene.root_assembly)}, ray id={id(self.scene.ray)}")
         print(f"SceneRenderer update_ray: root_assembly id={id(self.scene.root_assembly)}, ray id={id(ray)}")
-
-
-
-    def create_rotated_points(self, element):
-        """
-        Create a set of points for rotated rectangle.
-        Input: x, y, angle, width, height
-        Return: points Integer tuple
-        """
-        # Get coordinates and angle from the pose, assume (x, y, orientation)
-        x, y, orientation = element.pose
-        width, height = element.size
-        # Calculate coordinates for the rectangle's corners without rotation (angle=0 degrees) facing right
-        # Use "bellybutton" coordinates (center of the front face) as the origin
-        # x1 = x - width / 2
-        # x2 = x + width / 2
-        # y1 = y
-        # y2 = y + height
-        x1 = x
-        x2 = x - height
-        y1 = y + width / 2
-        y2 = y - width / 2
-        # Create points representing the rectangle without rotation
-        points = [x1, y1, x2, y1, x2, y2, x1, y2]
-        # Rotate the points around the "bellybutton" and return the rotated points
-        rotated_points = self.rotate_points(points, math.radians(orientation), (x,y))
-        # Convert the rotated points to integers to avoid TkInter bug with float coordinates
-        integer_points = [int(point) for point in rotated_points]
-        return integer_points
-
-
-    def rotate_points(self, points, angle, center):
-        """
-        Rotate a point counter-clockwise by a given angle around a given origin.
-        Input: points List, angle Float, center Tuple
-        Output: points List
-        """
-        for i in range(0, len(points), 2):
-            px, py = points[i], points[i+1]
-            points[i] = math.cos(angle) * (px - center[0]) - math.sin(angle) * (py - center[1]) + center[0]
-            points[i+1] = math.sin(angle) * (px - center[0]) + math.cos(angle) * (py - center[1]) + center[1]
-        return points
+    

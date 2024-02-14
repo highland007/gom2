@@ -7,7 +7,7 @@ from gom.parametric import create_element_segment, create_ray_segment, find_inte
 class Element(Serializable):
     def __init__(self, pose, size, element_type):
         # Initialize an element with type, size, and pose
-        self.pose = pose          # Tuple (x, y, orientation)        
+        self.pose = pose          # Tuple (x, y, orientation) not real pose - TODO (matrix 3x3 for 2D)        
         self.size = size          # Tuple (width, height)
         self.type = element_type  # 'mirror' or 'lens'
         self.tkinter_id = None    # Store the TkInter ID of the element for rendering
