@@ -6,7 +6,8 @@ class Settings:
         # Default settings
         self.background_color = 'black'
         self.element_fill = 'blue'
-        self.element_outline = 'white'
+        self.element_outline = 'blue'
+        self.element_segment = 'white'
         self.ray_color = 'red'  # Replace with your desired color
         self.assembly_color = 'magenta'  # Replace with your desired color
         self.label_color = 'your_label_color'  # Replace with your desired color
