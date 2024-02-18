@@ -67,7 +67,8 @@ class SceneRenderer:
     def render_ray(self, ray):
         # Trace ray through the elements and render the ray path
         ray.trace_ray(self.scene.root_assembly)
-        # Get the ray points from the ray path as a list of tuples (x, y)
+
+        # Draw ray from the ray path as a list of tuples (x, y), omitting the angle
         ray_points = []
         for ray_segment in ray.ray_path:
             ray_points.append(ray_segment[0:2])
@@ -80,6 +81,6 @@ class SceneRenderer:
             self.canvas.coords(self.ray_id, *ray_points)
 
         # TODO print assembly and ray ids for debugging
-        print(f"SceneRenderer update_ray: root_assembly id={id(self.scene.root_assembly)}, ray id={id(self.scene.ray)}")
-        print(f"SceneRenderer update_ray: root_assembly id={id(self.scene.root_assembly)}, ray id={id(ray)}")
+        # print(f"SceneRenderer update_ray: root_assembly id={id(self.scene.root_assembly)}, ray id={id(self.scene.ray)}")
+        # print(f"SceneRenderer update_ray: root_assembly id={id(self.scene.root_assembly)}, ray id={id(ray)}")
     

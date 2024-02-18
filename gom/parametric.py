@@ -7,6 +7,13 @@
 import math
 
 
+def distance(point1, point2):
+    """ Calculate the distance between two points.
+    Input: point1 (x, y), point2 (x, y)
+    Output: distance Float"""
+    return ((point1[0] - point2[0]) ** 2 + (point1[1] - point2[1]) ** 2) ** 0.5
+
+
 def parametric_form(pose):
     """
     Returns the parametric form coefficients of a line given its origin and direction angle. 
@@ -103,10 +110,10 @@ def calculate_normal(segment):
     return dys, -dxs
 
 
-def calculate_reflection(ray, segment):
+def calculate_reflection(ray, segment, epsilon=1e-6):
     """ Calculate the specular reflection of a ray on a mirror segment.
     Input: ray (x0, y0, dx, dy), segment (xs, ys, dxs, dys)
-    Output: reflected_ray_origin (x, y), reflected_angle
+    Output: reflected_ray (x, y, reflected_angle)
     """
     # Calculate the normal to the element segment at the intersection point
     normal = calculate_normal(segment)
@@ -132,7 +139,12 @@ def calculate_reflection(ray, segment):
     # Convert reflected direction into an angle
     reflected_angle = math.degrees(math.atan2(reflected_dy, reflected_dx))
 
-    return reflected_angle
+    # Shift the origin of the reflected ray a small amount along the new direction
+    reflected_x = ray[0] + epsilon * reflected_dx
+    reflected_y = ray[1] + epsilon * reflected_dy
+
+    # Return the reflected ray (x, y, angle)
+    return (reflected_x, reflected_y, reflected_angle)
 
 
 # TODO REMOVE OLD used for element rendering for polygon in scene_renderer.py

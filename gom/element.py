@@ -30,16 +30,8 @@ class Element(Serializable):
         Input: incident ray pose (x, y, angle)
         Output: reflected ray pose (x, y, angle)
         '''
-        # For now, just reflect the ray with a mirror adding 10 degrees to the angle
-        # TODO add real mirror physics, angle and position calculations
-
-        reflected_angle = calculate_reflection(ray, self.element_segment)
-
-        # TODO Shift the ray a small amount to avoid self-intersection
-        ds = 1e-0
-        # return (ray[0] - ds, ray[1] - ds, ray[2] + 135)
-
-        return (ray[0], ray[1], reflected_angle)
+        # Trace the ray through the element and return the reflected ray
+        return calculate_reflection(ray, self.element_segment)
 
 
     def to_json(self):
