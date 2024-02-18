@@ -12,7 +12,7 @@ def main():
     # Create a simple test assembly with two elements (replace with your assembly setup)
     # pose is (x, y, orientation) in pixels and angle in degrees
     test_assembly = Assembly(pose=(0, 0, 0))
-    test_assembly.add_element(Element(element_type="mirror_1", size=(100, 25), pose=(400, 100, 45)))
+    test_assembly.add_element(Element(element_type="mirror_1", size=(100, 25), pose=(400, 100, 135)))
     test_assembly.add_element(Element(element_type="mirror_2", size=(125, 35), pose=(400, 400, -45)))
     test_assembly.add_element(Element(element_type="mirror_3", size=(150, 45), pose=(800, 400, 0)))
 

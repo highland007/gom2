@@ -35,13 +35,11 @@ class Element(Serializable):
 
         reflected_angle = calculate_reflection(ray, self.element_segment)
 
-        # Shift the ray a small amount to avoid self-intersection
+        # TODO Shift the ray a small amount to avoid self-intersection
         ds = 1e-0
         # return (ray[0] - ds, ray[1] - ds, ray[2] + 135)
 
-        # Flip the ray angle due to screen coordinates
-        # TODO check angle flip / convention for the ray
-        return (ray[0], ray[1], -reflected_angle)
+        return (ray[0], ray[1], reflected_angle)
 
 
     def to_json(self):
