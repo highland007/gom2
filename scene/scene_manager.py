@@ -69,9 +69,9 @@ class SceneManager:
             # Calculate the distance between the mouse click and the element
             distance = ((x - event.x)**2 + (y - event.y)**2)**0.5
 
-            # If the distance is less than 10 pixels, the element was selected
+            # If the distance is less than 20 pixels, the element was selected
             # Update element position to new mouse position
-            if distance <= 50:
+            if distance <= 20:
                 # Update element pose in assembly to new mouse position
                 element.pose = (event.x, event.y, orientation)
                 # Print new element pose
@@ -84,7 +84,7 @@ class SceneManager:
                 self.renderer.render_ray(self.scene.ray)
                 
         # TODO print assembly and ray ids for debugging
-        print(f"SceneManager move_element: root_assembly id={id(self.scene.root_assembly)}, ray id={id(self.scene.ray)}")
+        # print(f"SceneManager move_element: root_assembly id={id(self.scene.root_assembly)}, ray id={id(self.scene.ray)}")
             
 
     def rotate_element(self, event):
