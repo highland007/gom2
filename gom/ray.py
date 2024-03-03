@@ -21,12 +21,9 @@ class Ray():
         Output: ray_positions (list of (x, y, angle))
         '''
             
-        # TODO later with boundry box with curved and complex elements
+        # TODO boundry box with curved and complex elements - special assembly of 4 boundary elements
         # TODO ensure proper direction of the ray segment and separation from current element (avoid self-intersection)
-        # TODO scene bounday conditions
-        # TODO improve the ray trace with the closest intersection
-
-        # TODO issue with the ray trace: only works on elements after the current element, need to recurse back !!!
+        # TODO speed up the ray trace loop looking for the closest element intersection first: +1 / -1 over assembly
 
         # Restart with the initial ray pose on every trace
         self.ray_path = [self.pose]

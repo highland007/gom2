@@ -1,8 +1,7 @@
 # gom/parametric.py
 # Parametric segment math for optical ray tracing functions
 
-# TODO rename to spatial.py for spatial math functions later
-# TODO add real pose math for 2D and 3D, requires numpy (poetry)
+# TODO change to using spatial.py for spatial math functions later
 
 import math
 
@@ -145,42 +144,3 @@ def calculate_reflection(ray, segment, epsilon=1e-6):
 
     # Return the reflected ray (x, y, angle)
     return (reflected_x, reflected_y, reflected_angle)
-
-
-# TODO REMOVE OLD used for element rendering for polygon in scene_renderer.py
-
-def create_rotated_points(element):
-        """
-        Create a set of points for rotated rectangle.
-        Input: x, y, angle, width, height
-        Return: points Integer tuple
-        """
-        # Get coordinates and angle from the pose, assume (x, y, orientation)
-        x, y, orientation = element.pose
-        width, height = element.size
-        # Calculate coordinates for the rectangle's corners without rotation (angle=0 degrees) facing right
-        # Use "bellybutton" coordinates (center of the front face) as the origin
-        x1 = x
-        x2 = x - height
-        y1 = y + width / 2
-        y2 = y - width / 2
-        # Create points representing the rectangle without rotation
-        points = [x1, y1, x2, y1, x2, y2, x1, y2]
-        # Rotate the points around the "bellybutton" and return the rotated points
-        rotated_points = rotate_points(points, math.radians(orientation), (x,y))
-        # Convert the rotated points to integers to avoid TkInter bug with float coordinates
-        integer_points = [int(point) for point in rotated_points]
-        return integer_points
-
-
-def rotate_points(points, angle, center):
-    """
-    Rotate a point counter-clockwise by a given angle around a given origin.
-    Input: points List, angle Float, center Tuple
-    Output: points List
-    """
-    for i in range(0, len(points), 2):
-        px, py = points[i], points[i+1]
-        points[i] = math.cos(angle) * (px - center[0]) - math.sin(angle) * (py - center[1]) + center[0]
-        points[i+1] = math.sin(angle) * (px - center[0]) + math.cos(angle) * (py - center[1]) + center[1]
-    return points

@@ -2,9 +2,6 @@
 # Handles the graphical rendering of the scene using TkInter canvas
 
 from tkinter import *
-import math
-from gom.scene import Scene
-from gom.parametric import create_rotated_points
 # Import the Settings class from the scene module
 from scene.settings import Settings
 
@@ -34,17 +31,6 @@ class SceneRenderer:
     def render_elements(self, elements):
         # Render all elements on the canvas
         for element in elements:
-
-            # TODO REMOVE after change rendering to use front and back segments for elements
-
-            # Calculate coordinates for the rectangle's corners with rotation
-            # polygon_points = create_rotated_points(element)
-            # Create polygon representing the filled rectangle with rotation
-            # poly = self.canvas.create_polygon(polygon_points, outline=self.settings.element_outline, fill=self.settings.element_fill)  # Assign the polygon's ID to poly
-            # Store the ID of the polygon in the element's tkinter_id attribute
-            # element.tkinter_id = poly
-
-            # TODO Display element segment for visual debugging - remove later
             # Unpack element segment (x, y, dx, dy) and draw a line
             x, y, dx, dy = element.element_segment
             # Draw a line representing the element segment
@@ -54,20 +40,13 @@ class SceneRenderer:
             element.tkinter_segment_id = line
 
     def update_element(self, element):
-        # Calculate coordinates for the rectangle's corners with rotation
-        # updated_points = create_rotated_points(element)
-        # Create polygon representing the rectangle with rotation
-        # self.canvas.coords(element.tkinter_id, updated_points)
-
-        # TODO Display element segment for visual debugging - remove later
-        # Unpack element segment (x, y, dx, dy) and draw a line
+        # Unpack element segment (x, y, dx, dy) and update the line coordinates
         x, y, dx, dy = element.element_segment
         self.canvas.coords(element.tkinter_segment_id, x, y, x + dx, y + dy)
 
     def render_ray(self, ray):
         # Trace ray through the elements and render the ray path
         ray.trace_ray(self.scene.root_assembly)
-
         # Draw ray from the ray path as a list of tuples (x, y), omitting the angle
         ray_points = []
         for ray_segment in ray.ray_path:
@@ -82,6 +61,3 @@ class SceneRenderer:
             #  Asterisk (*) because coords expects separate arguments for each coordinate, not a list of coordinates
             self.canvas.coords(self.ray_id, *flat_ray_points)
 
-        # TODO print assembly and ray ids for debugging
-        # print(f"SceneRenderer update_ray: root_assembly id={id(self.scene.root_assembly)}, ray id={id(self.scene.ray)}")
-        # print(f"SceneRenderer update_ray: root_assembly id={id(self.scene.root_assembly)}, ray id={id(ray)}")
