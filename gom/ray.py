@@ -3,8 +3,9 @@
 
 import logging
 from typing import List, Tuple
-from gom.parametric import distance, create_ray_segment, find_intersection
 from gom.assembly import Assembly
+from gom.parametric import distance, create_ray_segment, find_intersection
+
 
 class Ray():
     def __init__(self, pose, max_length=1000, max_segments=10):
@@ -33,6 +34,7 @@ class Ray():
         # Initialize the ray path with the initial pose
         self.ray_path = [self.pose]
 
+        # Ray trace loop
         while True:
             # Initialize closest intersection point and intersected element
             closest_intersection = None
