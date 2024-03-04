@@ -2,7 +2,7 @@
 # Defines the Element class for general optical models
 
 from gom.base import Serializable
-from gom.parametric import create_element_segment, create_ray_segment, find_intersection, calculate_reflection
+from gom.parametric import create_element_segment, calculate_reflection
 
 class Element(Serializable):
     def __init__(self, pose, size, element_type):

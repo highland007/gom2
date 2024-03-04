@@ -1,6 +1,7 @@
 # main.py
 # Entry point to run the application
 
+import logging
 from gom.assembly import Assembly
 from gom.element import Element
 from gom.ray import Ray
@@ -9,6 +10,10 @@ from scene.scene_renderer import SceneRenderer
 from scene.scene_manager import SceneManager
 
 def main():
+    # Set the logging level to DEBUG for detailed output to the log file
+    logging.basicConfig(filename='gom2.log', filemode='w', level=logging.DEBUG, format='%(name)s - %(levelname)s - %(message)s')
+    logging.warning('This will get logged to the console')
+
     # Create a simple test assembly with two elements (replace with your assembly setup)
     # pose is (x, y, orientation) in pixels and angle in degrees
     test_assembly = Assembly(pose=(0, 0, 0))

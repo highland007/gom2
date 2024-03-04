@@ -1,8 +1,10 @@
 # gom/ray.py
 # Defines the Ray class for general optical models
 
-import math
+import logging
+from typing import List, Tuple
 from gom.parametric import distance, create_ray_segment, find_intersection
+from gom.assembly import Assembly
 
 class Ray():
     def __init__(self, pose, max_length=1000, max_segments=10):
@@ -14,7 +16,7 @@ class Ray():
         self.type = 'ray'                   # 'ray'
         self.tkinter_id = None              # Add this line to store the TkInter ID of the element for rendering
 
-    def trace_ray(self, assembly):
+    def trace_ray(self, assembly: 'Assembly') -> List[Tuple[float, float, float]]:
         '''
         Trace a ray through an assembly of elements
         Input: assembly (list of elements), self.ray_pose (x, y, angle)
@@ -25,9 +27,10 @@ class Ray():
         # TODO ensure proper direction of the ray segment and separation from current element (avoid self-intersection)
         # TODO speed up the ray trace loop looking for the closest element intersection first: +1 / -1 over assembly
 
-        # Restart with the initial ray pose on every trace
+        # Log the start of the ray trace
+        logging.info(f"Starting ray trace at {self.pose}")
+        # Initialize the ray path with the initial pose
         self.ray_path = [self.pose]
-        print(f"Starting ray trace at {self.pose}")
 
         while True:
             # Initialize closest intersection point and intersected element
@@ -51,7 +54,7 @@ class Ray():
                 # No more intersections, break the loop
                 break
 
-            print(f"Closest intersection point: {closest_intersection}")
+            logging.info(f"Closest intersection point: {closest_intersection}")
             # Make tuple of intersection point and ray angle
             incident_ray = (closest_intersection[0], closest_intersection[1], self.ray_path[-1][2])
             # Trace the ray through the element with its method
@@ -60,10 +63,10 @@ class Ray():
             self.ray_path.append(incident_ray)
             self.ray_path.append(new_ray)
             # Print the incident and new ray
-            print(f"Incident ray: {incident_ray}")
-            print(f"New ray: {new_ray}")
+            logging.info(f"Incident ray: {incident_ray}")
+            logging.info(f"New ray: {new_ray}")
 
         # TODO Add final segment to the ray path to the scene boundary
         
-        print(f"Ray path: {self.ray_path}")
+        logging.info(f"Ray path: {self.ray_path}")
         return self.ray_path
