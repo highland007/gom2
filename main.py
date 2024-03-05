@@ -3,7 +3,7 @@
 
 import logging
 from gom.assembly import Assembly
-from gom.element import Element
+from gom.mirror import Mirror
 from gom.ray import Ray
 from gom.scene import Scene
 from scene.scene_renderer import SceneRenderer
@@ -17,9 +17,9 @@ def main():
     # Create a simple test assembly with two elements (replace with your assembly setup)
     # pose is (x, y, orientation) in pixels and angle in degrees
     test_assembly = Assembly(pose=(0, 0, 0))
-    test_assembly.add_element(Element(element_type="mirror_1", size=(100, 25), pose=(400, 100, 135)))
-    test_assembly.add_element(Element(element_type="mirror_2", size=(125, 35), pose=(400, 400, -45), reflectivity=0.9))
-    test_assembly.add_element(Element(element_type="mirror_3", size=(150, 45), pose=(800, 400, 45)))
+    test_assembly.add_element(Mirror(pose=(400, 100, 135), size=(100, 25)))
+    test_assembly.add_element(Mirror(pose=(400, 400, -45), size=(125, 35), reflectivity=0.9))
+    test_assembly.add_element(Mirror(pose=(800, 400, 45), size=(150, 45)))
 
     # Create a test ray with an initial pose (x, y, angle)
     test_ray = Ray(pose=(100, 100, 0))
