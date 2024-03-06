@@ -34,9 +34,8 @@ class SceneRenderer:
             # Unpack element segment (x, y, dx, dy) and draw a line
             x, y, dx, dy = element.element_segment
             # Draw a line representing the element segment
-            line = self.canvas.create_line(
-                x, y, x + dx, y + dy, fill=self.settings.element_segment, state='disabled')
-            # Store the ID of the polygon in the element's tkinter_id attribute
+            line = self.canvas.create_line(x, y, x + dx, y + dy, fill=self.settings.element_segment, state='disabled')
+           # Store the ID of the polygon in the element's tkinter_id attribute
             element.tkinter_segment_id = line
 
     def update_element(self, element):

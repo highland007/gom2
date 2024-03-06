@@ -7,7 +7,7 @@ from gom.parametric import distance
 
 
 class Xtal(Element):
-    def __init__(self, pose, size, gain=1.0, acceptance=(10, 45)):
+    def __init__(self, pose, size, gain=2.0, acceptance=(10, 45)):
         super().__init__(pose, size, "xtal")
         self.gain = gain
         self.acceptance = acceptance
@@ -15,7 +15,7 @@ class Xtal(Element):
     def trace_ray(self, ray, power):
         # Unpack the crystal and ray poses, and acceptance variables
         xc, yc, ac = self.pose
-        xr, yr, ar = ray.pose
+        xr, yr, ar = ray[0], ray[1], ray[2]
         circle_of_acceptance = self.acceptance[0]
         angle_of_acceptance = self.acceptance[1]
 
@@ -43,7 +43,10 @@ class Xtal(Element):
         # Multiply the power by the total gain
         new_power = power * total_gain
 
-        # The ray is not changed
-        new_ray = ray
+        # Shift the ray's position by a small amount to avoid self-intersection
+        new_ray_x = ray[0] + self.epsilon
+        new_ray_y = ray[1] + self.epsilon
+        new_ray = (new_ray_x, new_ray_y, ray[2])
+        # new_ray = ray
 
         return new_ray, new_power

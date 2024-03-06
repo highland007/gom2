@@ -9,6 +9,7 @@ class Element(Serializable):
         self.pose = pose
         self.size = size
         self.type = element_type
+        self.epsilon = 1e-6
         self.tkinter_id = None
         self.tkinter_segment_id = None
         self.update_segment()
