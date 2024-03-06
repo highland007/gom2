@@ -9,17 +9,20 @@ from gom.scene import Scene
 from scene.scene_renderer import SceneRenderer
 from scene.scene_manager import SceneManager
 
+
 def main():
     # Set the logging level to DEBUG for detailed output to the log file
-    logging.basicConfig(filename='gom2.log', filemode='w', level=logging.DEBUG, format='%(name)s - %(levelname)s - %(message)s')
+    logging.basicConfig(filename='gom2.log', filemode='w', level=logging.DEBUG,
+                        format='%(name)s - %(levelname)s - %(message)s')
     logging.warning('This will get logged to the console')
 
     # Create a simple test assembly with two elements (replace with your assembly setup)
     # pose is (x, y, orientation) in pixels and angle in degrees
     test_assembly = Assembly(pose=(0, 0, 0))
-    test_assembly.add_element(Mirror(pose=(400, 100, 135), size=(100, 25)))
-    test_assembly.add_element(Mirror(pose=(400, 400, -45), size=(125, 35), reflectivity=0.9))
-    test_assembly.add_element(Mirror(pose=(800, 400, 45), size=(150, 45)))
+    test_assembly.add_element(Mirror(pose=(400, 100, 135), size=(200, 25)))
+    test_assembly.add_element(
+        Mirror(pose=(400, 400, -45), size=(200, 35), reflectivity=0.9))
+    test_assembly.add_element(Mirror(pose=(800, 400, 45), size=(100, 45)))
 
     # Create a test ray with an initial pose (x, y, angle)
     test_ray = Ray(pose=(100, 100, 0))
@@ -41,7 +44,7 @@ def main():
     manager.handle_user_input()
 
     # Start the Tkinter event loop with the renderer's root window, accesible to the manager
-    renderer.root.mainloop()    
+    renderer.root.mainloop()
 
 
 if __name__ == "__main__":
