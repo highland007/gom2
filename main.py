@@ -4,6 +4,7 @@
 import logging
 from gom.assembly import Assembly
 from gom.mirror import Mirror
+from gom.xtal import Xtal
 from gom.ray import Ray
 from gom.scene import Scene
 from scene.scene_renderer import SceneRenderer
@@ -12,16 +13,15 @@ from scene.scene_manager import SceneManager
 
 def main():
     # Set the logging level to DEBUG for detailed output to the log file
-    logging.basicConfig(filename='gom2.log', filemode='w', level=logging.DEBUG,
-                        format='%(name)s - %(levelname)s - %(message)s')
+    logging.basicConfig(filename='gom2.log', filemode='w', level=logging.DEBUG, format='%(name)s - %(levelname)s - %(message)s')
     logging.warning('This will get logged to the console')
 
     # Create a simple test assembly with two elements (replace with your assembly setup)
     # pose is (x, y, orientation) in pixels and angle in degrees
     test_assembly = Assembly(pose=(0, 0, 0))
     test_assembly.add_element(Mirror(pose=(400, 100, 135), size=(200, 25)))
-    test_assembly.add_element(
-        Mirror(pose=(400, 400, -45), size=(200, 35), reflectivity=0.9))
+    test_assembly.add_element(Mirror(pose=(400, 400, -45), size=(200, 35), reflectivity=0.9))
+    test_assembly.add_element(Xtal(pose=(600, 400, 0), size=(10, 100), gain=2.0, acceptance=(10, 45)))
     test_assembly.add_element(Mirror(pose=(800, 400, 45), size=(100, 45)))
 
     # Create a test ray with an initial pose (x, y, angle)
