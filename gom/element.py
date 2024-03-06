@@ -2,6 +2,9 @@
 # Defines the generic Element class for general optical models
 
 from gom.base import Serializable
+from gom.mirror import Mirror
+from gom.lens import Lens
+from gom.xtal import Xtal
 from gom.parametric import create_element_segment
 
 class Element(Serializable):
