@@ -60,7 +60,7 @@ class Ray():
                 # No more intersections, break the loop
                 break
 
-            logging.info(f"Closest intersection point: {closest_intersection}")
+            logging.debug(f"Closest intersection point: {closest_intersection}")
             # Make tuple of intersection point and ray angle
             incident_ray = (closest_intersection[0], closest_intersection[1], self.ray_path[-1][2])
             incident_power = self.ray_power_path[-1]
@@ -76,10 +76,10 @@ class Ray():
             self.ray_power_path.append(incident_power)
             self.ray_power_path.append(new_power)
             # Log the incident and new ray and power
-            logging.info(f"Incident ray: {incident_ray}")
-            logging.info(f"New ray: {new_ray}")
-            logging.info(f"Incident power: {incident_power}")
-            logging.info(f"New power: {new_power}")
+            logging.debug(f"Incident ray: {incident_ray}")
+            logging.debug(f"New ray: {new_ray}")
+            logging.debug(f"Incident power: {incident_power}")
+            logging.debug(f"New power: {new_power}")
 
         # TODO Add final segment to the ray path to the scene boundary
         

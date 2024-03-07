@@ -13,8 +13,7 @@ from scene.scene_manager import SceneManager
 
 def main():
     # Set the logging level to DEBUG for detailed output to the log file
-    logging.basicConfig(filename='gom2.log', filemode='w', level=logging.DEBUG, format='%(name)s - %(levelname)s - %(message)s')
-    logging.warning('This will get logged to the console')
+    logging.basicConfig(filename='gom2.log', filemode='w', level=logging.INFO, format='%(name)s - %(levelname)s - %(message)s')
 
     # Create a simple test assembly with two elements (replace with your assembly setup)
     # pose is (x, y, orientation) in pixels and angle in degrees
