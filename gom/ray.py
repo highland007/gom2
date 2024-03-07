@@ -8,7 +8,7 @@ from gom.parametric import distance, create_ray_segment, find_intersection
 
 
 class Ray():
-    def __init__(self, pose, power=1.0, max_length=1000, max_segments=10):
+    def __init__(self, pose, power=1.0, max_length=1000, max_segments=100):
         # Initialize a ray with initial pose (origin) and max number of segments
         self.pose = pose                    # Tuple (x, y, orientation)
         self.power = power                  # Initialize the ray power        
@@ -29,11 +29,13 @@ class Ray():
         # TODO ensure proper direction of the ray segment and separation from current element (avoid self-intersection)
         # TODO speed up the ray trace loop looking for the closest element intersection first: +1 / -1 over assembly
 
-        # Log the start of the ray trace
-        logging.info(f"Starting ray trace at {self.pose}")
         # Initialize the ray path with the initial pose and power
         self.ray_path = [self.pose]
         self.ray_power_path = [self.power]
+
+        # Log the start of the ray trace
+        logging.info(f"Starting ray trace at {self.pose}")
+        logging.info(f"Ray initial power: {self.ray_power_path[0]}")
 
         # Ray trace loop
         while True:
@@ -85,6 +87,7 @@ class Ray():
         
         logging.info(f"Ray path: {self.ray_path}")
         logging.info(f"Ray power path: {self.ray_power_path}")
+        logging.info(f"Ray final power: {self.ray_power_path[-1]}")
         return self.ray_path, self.ray_power_path
 
 

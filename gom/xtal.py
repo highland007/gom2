@@ -29,7 +29,9 @@ class Xtal(Element):
             position_overlap = 0
 
         # Calculate the difference in angle between the ray's direction and the crystal's orientation
-        angle_difference = abs(ar - ac)
+        angle_difference = abs(ar - ac) % (2 * math.pi)
+        if angle_difference > math.pi:
+            angle_difference = 2 * math.pi - angle_difference
 
         # Calculate the angle overlap using a cosine model
         if angle_difference < angle_of_acceptance:
@@ -44,8 +46,8 @@ class Xtal(Element):
         new_power = power * total_gain
 
         # Shift the ray's position by a small amount to avoid self-intersection
-        new_ray_x = ray[0] + self.epsilon
-        new_ray_y = ray[1] + self.epsilon
+        new_ray_x = ray[0] + self.epsilon * math.cos(math.radians(ray[2]))
+        new_ray_y = ray[1] + self.epsilon * math.sin(math.radians(ray[2]))
         new_ray = (new_ray_x, new_ray_y, ray[2])
         # new_ray = ray
 

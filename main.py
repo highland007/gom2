@@ -17,22 +17,48 @@ def main():
 
     # Create a simple test assembly with two elements (replace with your assembly setup)
     # pose is (x, y, orientation) in pixels and angle in degrees
-    test_assembly = Assembly(pose=(0, 0, 0))
-    test_assembly.add_element(Mirror(pose=(400, 100, 135), size=(200, 25)))
-    test_assembly.add_element(Mirror(pose=(400, 400, -45), size=(200, 35), reflectivity=0.9))
-    test_assembly.add_element(Xtal(pose=(600, 400, 0), size=(10, 100), gain=2.0, acceptance=(10, 45)))
-    test_assembly.add_element(Mirror(pose=(800, 400, 45), size=(100, 45)))
+    # test_assembly = Assembly(pose=(0, 0, 0))
+    # test_assembly.add_element(Mirror(pose=(400, 100, 135), size=(200, 25)))
+    # test_assembly.add_element(Mirror(pose=(400, 400, -45), size=(200, 35), reflectivity=0.9))
+    # test_assembly.add_element(Xtal(pose=(600, 400, 0), size=(30, 100), gain=2.0, acceptance=(30, 10)))
+    # test_assembly.add_element(Mirror(pose=(800, 400, 45), size=(100, 45)))
 
     # Create a test ray with an initial pose (x, y, angle)
-    test_ray = Ray(pose=(100, 100, 0))
+    # test_ray = Ray(pose=(100, 100, 0))
 
     # Trace the ray through the test assembly and print the ray path possibly to the console/file
     # test_ray.trace_ray(test_assembly)
     # print(test_ray.ray_path)
 
-    # Create the scene with the test assembly as the root assembly and ray
-    scene = Scene(root_assembly=test_assembly, ray=test_ray)
 
+    # DEMO RED: RDX
+    rdx_assembly = Assembly(pose=(0, 0, 0))
+    rdx_assembly.add_element(Mirror(pose=(100, 100, -37), size=(50, 25)))
+    rdx_assembly.add_element(Mirror(pose=(800, 300, 188), size=(50, 25), reflectivity=0.99))
+    rdx_assembly.add_element(Mirror(pose=(400, 300, -8), size=(50, 25), reflectivity=0.99))
+    rdx_assembly.add_element(Xtal(pose=(600, 300, 0), size=(10, 100), gain=11.0, acceptance=(10, 5)))
+    rdx_assembly.add_element(Mirror(pose=(1105, 115, 210), size=(20, 25)))
+    rdx_assembly.add_element(Mirror(pose=(1100, 100, 120), size=(20, 25)))
+    rdx_input_ray = Ray(pose=(100, 10, 90))
+    scene = Scene(root_assembly=rdx_assembly, ray=rdx_input_ray)
+
+
+    # # DEMO RED: VANGUARD1
+    # vanguard_assembly = Assembly(pose=(0, 0, 0))
+    # vanguard_assembly.add_element(Mirror(pose=(100, 200, 5), size=(50, 25), reflectivity=0.01))
+    # vanguard_assembly.add_element(Mirror(pose=(300, 400, 0), size=(300, 25)))
+    # vanguard_assembly.add_element(Mirror(pose=(700, 300, 0), size=(150, 25)))
+    # vanguard_assembly.add_element(Mirror(pose=(800, 400, 0), size=(50, 25), reflectivity=0.99))
+    # vanguard_assembly.add_element(Xtal(pose=(770, 400, 0), size=(10, 100), gain=11.0, acceptance=(10, 5)))
+    # vanguard_assembly.add_element(Mirror(pose=(700, 500, 0), size=(150, 25)))    
+    # vanguard_assembly.add_element(Mirror(pose=(150, 600, -5.02), size=(50, 25)))   
+    # vanguard_input_ray = Ray(pose=(101, 200, 5))
+    # scene = Scene(root_assembly=vanguard_assembly, ray=vanguard_input_ray)
+
+
+    # Create the scene with the test assembly as the root assembly and ray
+    # scene = Scene(root_assembly=test_assembly, ray=test_ray)
+   
     # Create a scene renderer and manager, and pass the scene and renderer to the manager
     # Ray tracing and rendering is done by the renderer, user input by the manager
     renderer = SceneRenderer(scene)
