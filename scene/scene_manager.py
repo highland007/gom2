@@ -1,7 +1,7 @@
 # gom/scene/scene_manager.py
 # Handles user controls and interactions in the scene
 
-import math
+import logging
 
 class SceneManager:
     def __init__(self, scene, renderer, canvas):
@@ -35,7 +35,7 @@ class SceneManager:
 
     def select_element(self, event):
         # Handle mouse click event here
-        print(f"Mouse clicked at {event.x}, {event.y}")
+        logging.info(f"Mouse clicked at {event.x}, {event.y}")
 
         # Iterate over the elements in the scene's root_assembly
         for element in self.scene.root_assembly.elements:
@@ -50,7 +50,7 @@ class SceneManager:
 
             # If the distance is less than 10 pixels, the element was selected
             if distance <= 50:
-                print(f"Element {element.type} was selected")
+                logging.info(f"Element {element.type} was selected")
 
 
     def move_element(self, event):
@@ -74,8 +74,8 @@ class SceneManager:
             if distance <= 20:
                 # Update element pose in assembly to new mouse position
                 element.pose = (event.x, event.y, orientation)
-                # Print new element pose
-                print(f"Element {element.type} was moved to {element.pose}")
+                # Log new element pose
+                logging.info(f"Element {element.type} was moved to {element.pose}")
               # Update element segment with new coordinates
                 element.update_segment()
                 # Update element on the screen with new coordinates
@@ -89,7 +89,7 @@ class SceneManager:
 
     def rotate_element(self, event):
         # Handle mouse double click event here
-        print(f"Mouse double clicked at {event.x}, {event.y}")
+        logging.info(f"Mouse double clicked at {event.x}, {event.y}")
 
         # Iterate over the elements in the scene's root_assembly
         for element in self.scene.root_assembly.elements:
@@ -104,7 +104,6 @@ class SceneManager:
             # If the distance is less than 10 pixels, the element was selected
             # Update element orientation by 10 degrees
             if distance <= 50:
-                print(f"Element {element.type} was selected")
                 # Update element in assembly
                 # TODO for testing: orientation by 10 degrees
                 # TODO add alignment/aiming to mouse cursor or ray aiming later
