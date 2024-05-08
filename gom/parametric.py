@@ -24,7 +24,7 @@ def parametric_form(pose):
 
     # Convert the angle to radians
     rad = math.radians(a)
-        
+
     # Return the parametric form coefficients
     return (x0, y0, math.cos(rad), math.sin(rad))
 
@@ -40,13 +40,16 @@ def create_element_segment(element):
     w, h = element.size
 
     # Create the segment from the element pose and size (width)
-    seg_start = parametric_form((xm - w/2 * math.cos(math.radians(am + 90)), ym - w/2 * math.sin(math.radians(am + 90)), am))
-    seg_end = parametric_form((xm + w/2 * math.cos(math.radians(am + 90)), ym + w/2 * math.sin(math.radians(am + 90)), am))
-        
+    seg_start = parametric_form(
+        (xm - w/2 * math.cos(math.radians(am + 90)), ym - w/2 * math.sin(math.radians(am + 90)), am))
+    seg_end = parametric_form(
+        (xm + w/2 * math.cos(math.radians(am + 90)), ym + w/2 * math.sin(math.radians(am + 90)), am))
+
     # Return the segment
-    segment = (seg_start[0], seg_start[1], seg_end[0] - seg_start[0], seg_end[1] - seg_start[1])
+    segment = (seg_start[0], seg_start[1], seg_end[0] -
+               seg_start[0], seg_end[1] - seg_start[1])
     return segment
-    
+
 
 def create_ray_segment(pose, length):
     """
@@ -84,7 +87,7 @@ def find_intersection(segment1, segment2):
     # Check if the lines are parallel (cross product is zero)
     cross_product = dx * dys - dy * dxs
     if cross_product == 0:
-        return None # No intersection (parallel or coincident lines)
+        return None  # No intersection (parallel or coincident lines)
 
     # Compute the parameter t for the intersection point on segment 1
     t = ((xs - x0) * dys - (ys - y0) * dxs) / cross_product
@@ -144,3 +147,48 @@ def calculate_reflection(ray, segment, epsilon=1e-6):
 
     # Return the reflected ray (x, y, angle)
     return (reflected_x, reflected_y, reflected_angle)
+
+
+# TODO correctly implement refraction for thin lens element
+
+def calculate_refraction(ray, segment, focal_length, epsilon=1e-6):
+    """ Calculate the refracton of a ray through a lens segment.
+    Input: ray (x0, y0, dx, dy), segment (xs, ys, dxs, dys)
+    Output: refracted_ray (x = x0, y = x0, refracted_angle)
+    """
+    # Calculate the normal to the element segment at the intersection point
+    normal = calculate_normal(segment)
+    nx, ny = normal
+
+    # Calculate ray segment from the ray origin and a unit length
+    ray_segment = create_ray_segment(ray, 1.0)
+
+    # Ray direction
+    _, _, dx, dy = ray_segment
+
+    # Normalize the normal vector
+    norm_length = math.sqrt(nx**2 + ny**2)
+    nx, ny = nx / norm_length, ny / norm_length
+
+    # Dot product of ray direction and normal
+    dot_product = dx * nx + dy * ny
+
+    # TODO adapt for refraction
+    # Reflect the ray across the normal
+    reflected_dx = dx - 2 * dot_product * nx
+    reflected_dy = dy - 2 * dot_product * ny
+
+    # Convert reflected direction into an angle
+    reflected_angle = math.degrees(math.atan2(reflected_dy, reflected_dx))
+
+    # TODO start with the same ray angle + 1/f [degrees] for quick test
+    refracted_angle = ray[2] + 1/focal_length
+
+    # Shift the origin of the refracted ray a small amount along the new direction
+    # TODO start with old direction for quick testing
+    refracted_x = ray[0] + epsilon * dx
+    refracted_y = ray[1] + epsilon * dy
+
+    # TODO start with the same ray angle + 1/f [degrees] for quick test
+    # Return the refracted ray (x = x0, y = x0, angle)
+    return (refracted_x, refracted_y, refracted_angle)
