@@ -24,10 +24,10 @@ def main():
     test_assembly.add_element(
         Mirror(pose=(400, 400, -45), size=(200, 35), reflectivity=0.9))
     test_assembly.add_element(
-        Lens(pose=(600, 400, 0), size=(30, 100), focal_length=0.1))
+        Lens(pose=(600, 400, 0), size=(100, 100), focal_length=200))
     # TODO change Xtal element to inherit from Lens
     # test_assembly.add_element(Xtal(pose=(600, 400, 0), size=(30, 100), gain=2.0, acceptance=(30, 10)))
-    test_assembly.add_element(Mirror(pose=(800, 400, 45), size=(100, 45)))
+    test_assembly.add_element(Mirror(pose=(800, 400, 0), size=(100, 45)))
 
     # Create a test ray with an initial pose (x, y, angle)
     test_ray = Ray(pose=(100, 100, 0))

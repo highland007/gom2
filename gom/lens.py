@@ -15,6 +15,6 @@ class Lens(Element):
     def trace_ray(self, ray, power):
         # TODO move calculate_refraction here or leave at parametric.py?
         new_ray = calculate_refraction(
-            ray, self.element_segment, self.focal_length)
+            ray, self.pose, self.element_segment, self.focal_length)
         new_power = power
         return new_ray, new_power

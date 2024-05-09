@@ -151,8 +151,8 @@ def calculate_reflection(ray, segment, epsilon=1e-6):
 
 # TODO correctly implement refraction for thin lens element
 
-def calculate_refraction(ray, segment, focal_length, epsilon=1e-6):
-    """ Calculate the refracton of a ray through a lens segment.
+def calculate_refraction(ray, element_pose, segment, focal_length, epsilon=1e-6):
+    """ Calculate the refraction of a ray through a lens segment.
     Input: ray (x0, y0, dx, dy), segment (xs, ys, dxs, dys)
     Output: refracted_ray (x = x0, y = x0, refracted_angle)
     """
@@ -173,22 +173,91 @@ def calculate_refraction(ray, segment, focal_length, epsilon=1e-6):
     # Dot product of ray direction and normal
     dot_product = dx * nx + dy * ny
 
-    # TODO adapt for refraction
-    # Reflect the ray across the normal
-    reflected_dx = dx - 2 * dot_product * nx
-    reflected_dy = dy - 2 * dot_product * ny
+    # Transform incident ray angle to local ray angle in the lens reference frame
+    local_angle = math.atan2(dy, dx) - element_pose[2]
 
-    # Convert reflected direction into an angle
-    reflected_angle = math.degrees(math.atan2(reflected_dy, reflected_dx))
+    # Calculate the distance from the ray intersection point to the center of the lens segment
+    segment_center_x = segment[0] + 0.5 * segment[2]
+    segment_center_y = segment[1] + 0.5 * segment[3]
+    distance_to_center = math.sqrt((ray[0]-segment_center_x)**2 + (ray[1]-segment_center_y)**2)
 
-    # TODO start with the same ray angle + 1/f [degrees] for quick test
-    refracted_angle = ray[2] + 1/focal_length
+    # Calculate the vector from the intersection point to the center of the lens segment
+    center_vector_dx = segment_center_x - ray[0]
+    center_vector_dy = segment_center_y - ray[1]
+
+    # Calculate the dot product of the ray direction and the center vector
+    dot_product = dx * center_vector_dx + dy * center_vector_dy
+
+    # Calculate the cross product of the ray direction and the center vector
+    cross_product = dx * center_vector_dy - dy * center_vector_dx
+
+    # Adjust the sign of the bending angle based on the dot product and the cross product
+    if dot_product > 0:
+        sign = 1 if cross_product < 0 else -1
+    else:
+        sign = -1 if cross_product < 0 else 1
+
+    # Calculate the new local ray angle through the lens
+    new_local_angle = local_angle + sign * distance_to_center / focal_length
+
+    # Transform the new local angle back to global angle for the new ray
+    refracted_angle = new_local_angle + element_pose[2]
 
     # Shift the origin of the refracted ray a small amount along the new direction
-    # TODO start with old direction for quick testing
-    refracted_x = ray[0] + epsilon * dx
-    refracted_y = ray[1] + epsilon * dy
+    refracted_dx = math.cos(refracted_angle)
+    refracted_dy = math.sin(refracted_angle)
+    refracted_x = ray[0] + epsilon * refracted_dx
+    refracted_y = ray[1] + epsilon * refracted_dy
 
-    # TODO start with the same ray angle + 1/f [degrees] for quick test
     # Return the refracted ray (x = x0, y = x0, angle)
-    return (refracted_x, refracted_y, refracted_angle)
+    return (refracted_x, refracted_y, math.degrees(refracted_angle))
+
+
+# def calculate_refraction(ray, element_pose, segment, focal_length, epsilon=1e-6):
+#     """ Calculate the refraction of a ray through a lens segment.
+#     Input: ray (x0, y0, dx, dy), segment (xs, ys, dxs, dys)
+#     Output: refracted_ray (x = x0, y = x0, refracted_angle)
+#     """
+#     # Calculate the normal to the element segment at the intersection point
+#     normal = calculate_normal(segment)
+#     nx, ny = normal
+
+#     # Calculate ray segment from the ray origin and a unit length
+#     ray_segment = create_ray_segment(ray, 1.0)
+
+#     # Ray direction
+#     _, _, dx, dy = ray_segment
+
+#     # Normalize the normal vector
+#     norm_length = math.sqrt(nx**2 + ny**2)
+#     nx, ny = nx / norm_length, ny / norm_length
+
+#     # Dot product of ray direction and normal
+#     dot_product = dx * nx + dy * ny
+
+#     # Transform incident ray angle to local ray angle in the lens reference frame
+#     local_angle = math.atan2(dy, dx) - element_pose[2]
+
+#     # Calculate the distance from the ray intersection point to the center of the lens segment
+#     segment_center_x = segment[0] + 0.5 * segment[2]
+#     segment_center_y = segment[1] + 0.5 * segment[3]
+#     distance_to_center = math.sqrt((ray[0]-segment_center_x)**2 + (ray[1]-segment_center_y)**2)
+
+#     # Adjust the sign of the bending angle based on which side of the center the ray hits
+#     # sign = -1 if ray[0] < segment_center_x else 1
+#     sign = 1 if ray[1] < segment_center_y else -1
+
+#     # Calculate the new local ray angle through the lens
+#     new_local_angle = local_angle + sign * distance_to_center / focal_length
+
+#     # Transform the new local angle back to global angle for the new ray
+#     refracted_angle = new_local_angle + element_pose[2]
+
+#     # Shift the origin of the refracted ray a small amount along the new direction
+#     refracted_dx = math.cos(refracted_angle)
+#     refracted_dy = math.sin(refracted_angle)
+#     refracted_x = ray[0] + epsilon * refracted_dx
+#     refracted_y = ray[1] + epsilon * refracted_dy
+
+#     # Return the refracted ray (x = x0, y = x0, angle)
+#     return (refracted_x, refracted_y, math.degrees(refracted_angle))
